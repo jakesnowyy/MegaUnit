@@ -45,9 +45,11 @@ int main(){
 				break;
 			case 2:
 				printf("OK\n");
+                quit_ok = 1;
 				break;
 			default:
 				printf("Error");
+                quit_ok = 1;
 				break;
 		}
     } while (!quit_ok);

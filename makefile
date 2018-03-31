@@ -4,20 +4,30 @@
 
 CC = gcc
 CFLAGS = -g -Wall -std=c99
+TEST = -DTEST
+EXEC = megaunit.exe
 
-build: clean greetings megaunit.exe
+build: clean greetings megaunit.exe ok
 
-test: clean greetings add_test megaunit.exe
+build_test: clean greetings add_test megaunit.exe ok
 
-megaunit.exe: megaunit.c
-	$(CC) -o $@ $? $(CFLAGS)
+test:
+	@py megatest.py
 
 .PHONY: clean add_test greetings
 
 greetings: 
-	@echo "Compiling project"
+	@echo Compiling project
 
-clean: megaunit.exe
-	@rm $^
+clean:
+	@del $(EXEC) 2>nul
 
-add_test: CFLAGS += -DTEST
+add_test:
+	$(eval CFLAGS += $(TEST))
+	@echo Test Enabled
+
+$(EXEC): megaunit.c
+	@$(CC) -o $@ $^ $(CFLAGS)
+
+ok:
+	@echo No errors
