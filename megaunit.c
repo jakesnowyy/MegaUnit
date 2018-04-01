@@ -10,7 +10,8 @@
 
 typedef unsigned long long int u64;
 
-void add_asm(u64 num3_sz, u64 num2_sz, u64 num2, u64 num3);
+void add_asm(u64 num2_sz, u64 num3_sz, u64 num2, u64 num3);
+void sub_asm(u64 num2_sz, u64 num3_sz, u64 num2, u64 num3);
 
 typedef struct MegaUnit {
     u64* num;
@@ -144,9 +145,30 @@ megaunit* add(megaunit* num1, megaunit* num2){
     return num3;
 }
 
-// megaunit* sub(megaunit* num1, megaunit* num2){
-
-// }
+megaunit* sub(megaunit* num1, megaunit* num2){
+    megaunit *n1 = num1, *n2 = num2;
+    if(gt(num2, num1)){
+        n1 = num2;
+        n2 = num1;
+    }
+    megaunit* num3 = cpx(n1, 0);
+    memcpy(num3->num, n2->num, sizeof(u64)*n2->sz);
+    sub_asm(n2->sz, num3->sz, (u64)n2->num, (u64)num3->num);
+    long long int i = num3->sz-1;
+    while(num3->num[i] == 0){
+        if(i > 0){
+            i--;
+        } else{
+            free(num3->num);
+            num3->num = NULL;
+            num3->sz = 0;
+            return num3;
+        }
+    }
+    num3->sz = i+1;
+    realloc(num3->num, sizeof(u64)*num3->sz);
+    return num3;
+}
 
 // megaunit* mul(megaunit* num1, megaunit* num2){
 
