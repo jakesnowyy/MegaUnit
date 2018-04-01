@@ -3,7 +3,7 @@
 # By ..
 
 CC = gcc
-CFLAGS = -g -Wall -std=c99
+CFLAGS = -g -Wall -std=c99 -pedantic -Wno-format
 TEST = -DTEST
 EXEC = megaunit.exe
 
@@ -26,7 +26,10 @@ add_test:
 	$(eval CFLAGS += $(TEST))
 	@echo Test Enabled
 
-$(EXEC): megaunit.c
+megaunit.obj:
+	nasm -fwin64 megaunit.s
+
+$(EXEC): megaunit.obj megaunit.c
 	@$(CC) -o $@ $^ $(CFLAGS)
 
 ok:

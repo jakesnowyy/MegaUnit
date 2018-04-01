@@ -10,6 +10,8 @@
 
 typedef unsigned long long int u64;
 
+void add_asm(u64 num3_sz, u64 num2_sz, u64 num2, u64 num3);
+
 typedef struct MegaUnit {
     u64* num;
     u64 sz;
@@ -20,6 +22,8 @@ const char * ok_cmd[] = {
 };
 
 const int n_cmds = (sizeof (ok_cmd) / sizeof (const char *));
+
+megaunit* cpx(megaunit* num, u64 bigger);
 
 megaunit* add(megaunit* num1, megaunit* num2);
 megaunit* sub(megaunit* num1, megaunit* num2);
@@ -52,14 +56,17 @@ int main(){
     printf("num1 < num2 == %d\n", lt(num1, num2));
     printf("num1 == num2 == %d\n", eq(num1, num2));
     printf("num1 != num2 == %d\n", ne(num1, num2));
-    printf("num1 >> 2^64:\n");
-    rs(num1);
-    pr(num1);
-    printf("num2 << 2^64:\n");
-    ls(num2);
-    pr(num2);
+    // printf("num1 >> 2^64:\n");
+    // rs(num1);
+    // pr(num1);
+    // printf("num2 << 2^64:\n");
+    // ls(num2);
+    // pr(num2);
+    megaunit* add_result = add(num1, num2);
+    pr(add_result);
     dt(num1);
     dt(num2);
+    dt(add_result);
 
 
 
@@ -100,9 +107,42 @@ int main(){
     return 0;
 }
 
-// megaunit* add(megaunit* num1, megaunit* num2){
+megaunit* cpx(megaunit* num, u64 bigger){
+    megaunit* n = ct();
+    n->sz = num->sz + bigger;
+    n->num = calloc(n->sz, sizeof(u64));
+    if(n->num == NULL){
+        //This gave me an error, but I don't care right now
+        printf("Error\n");
+        return NULL;
+    }
+    memcpy(n->num, num->num, sizeof(u64)*num->sz);
+    return n;
+}
 
-// }
+megaunit* add(megaunit* num1, megaunit* num2){
+    megaunit *n1 = num1, *n2 = num2;
+    if(gt(num2, num1)){
+        n1 = num2;
+        n2 = num1;
+    }
+    megaunit* num3 = cpx(n1, 1);
+    add_asm(n2->sz, num3->sz, (u64)n2->num, (u64)num3->num);
+    long long int i = num3->sz-1;
+    while(num3->num[i] == 0){
+        if(i > 0){
+            i--;
+        } else{
+            free(num3->num);
+            num3->num = NULL;
+            num3->sz = 0;
+            return num3;
+        }
+    }
+    num3->sz = i+1;
+    realloc(num3->num, sizeof(u64)*num3->sz);
+    return num3;
+}
 
 // megaunit* sub(megaunit* num1, megaunit* num2){
 
@@ -203,13 +243,13 @@ void pr(megaunit* num){
     if(FULL){
 
     } else{
-        printf("sz=%I64d\n", num->sz);
+        printf("sz=%llu\n", num->sz);
         long long int i = num->sz - 1;
         long long int exponent = i;
         if(num->sz == 0) 
             printf("0");
         while(i >= 0)
-            printf("%I64d * 18446744073709551616^%I64d ", num->num[i--], exponent--);
+            printf("%llu * 18446744073709551616^%lld ", num->num[i--], exponent--);
         printf("\n");
     }
 }
@@ -239,7 +279,7 @@ megaunit* rd(char* s){
         char* word = strtok(s, ",");
         sz--;
         while(word != NULL){
-            sscanf(word, "%I64d", &(num->num[sz]));
+            sscanf(word, "%llu", &(num->num[sz]));
             sz--;
             word = strtok(NULL, ",");
         }
