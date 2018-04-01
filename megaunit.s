@@ -19,22 +19,21 @@ add_asm:
     inc rdx
     inc rdx
     inc rcx
-loop_1:
+add_loop_1:
     dec rdx
     dec rcx
-    jz loop_2 ; if zero goto 2nd loop
-    ;mov r11, 0
+    jz add_loop_2 ; if zero goto 2nd loop
     mov r11, [r8+8*r10]
     adc [r9+8*r10], r11
     inc r10
-    jmp loop_1
-loop_2:
+    jmp add_loop_1
+add_loop_2:
     dec rdx
-    jz end
-    adc [r9+8*r10], 0
+    jz add_end
+    adc [r9+8*r10], byte 0
     inc r10
-    jmp loop_2
-end:
+    jmp add_loop_2
+add_end:
     add rsp, 32
     ret
 
@@ -50,25 +49,21 @@ sub_asm:
     inc rdx
     inc rdx
     inc rcx
-enter_loop_1:
+sub_loop_1:
     dec rdx
     dec rcx
-    jz loop_2 ; if zero goto 2nd loop
-    mov r11, 0
-    sbb r11, [r8+8*r10]
-    jz jump_over ; jump over adc
-    adc [r9+8*r10], r11
-enter_jump_over:
+    jz sub_loop_2 ; if zero goto 2nd loop
+    mov r11, [r8+8*r10]
+    sbb [r9+8*r10], r11
     inc r10
-    jmp loop_1
-enter_loop_2:
+    jmp sub_loop_1
+sub_loop_2:
     dec rdx
-    jz end
-    mov r11, 0
-    adc [r9+8*r10], r11
+    jz sub_end
+    sbb [r9+8*r10], byte 0
     inc r10
-    jmp loop_2
-enter_end:
+    jmp sub_loop_2
+sub_end:
     add rsp, 32
     ret
 

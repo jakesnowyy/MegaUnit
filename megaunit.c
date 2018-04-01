@@ -42,6 +42,7 @@ void pr(megaunit* num);
 megaunit* rd(char* s);
 
 megaunit* ct();
+void shrk(megaunit* num);
 void dt(megaunit* num);
 
 int main(){
@@ -63,7 +64,7 @@ int main(){
     // printf("num2 << 2^64:\n");
     // ls(num2);
     // pr(num2);
-    megaunit* add_result = add(num1, num2);
+    megaunit* add_result = sub(num1, num2);
     pr(add_result);
     dt(num1);
     dt(num2);
@@ -129,19 +130,7 @@ megaunit* add(megaunit* num1, megaunit* num2){
     }
     megaunit* num3 = cpx(n1, 1);
     add_asm(n2->sz, num3->sz, (u64)n2->num, (u64)num3->num);
-    long long int i = num3->sz-1;
-    while(num3->num[i] == 0){
-        if(i > 0){
-            i--;
-        } else{
-            free(num3->num);
-            num3->num = NULL;
-            num3->sz = 0;
-            return num3;
-        }
-    }
-    num3->sz = i+1;
-    realloc(num3->num, sizeof(u64)*num3->sz);
+    shrk(num3);
     return num3;
 }
 
@@ -152,21 +141,8 @@ megaunit* sub(megaunit* num1, megaunit* num2){
         n2 = num1;
     }
     megaunit* num3 = cpx(n1, 0);
-    memcpy(num3->num, n2->num, sizeof(u64)*n2->sz);
     sub_asm(n2->sz, num3->sz, (u64)n2->num, (u64)num3->num);
-    long long int i = num3->sz-1;
-    while(num3->num[i] == 0){
-        if(i > 0){
-            i--;
-        } else{
-            free(num3->num);
-            num3->num = NULL;
-            num3->sz = 0;
-            return num3;
-        }
-    }
-    num3->sz = i+1;
-    realloc(num3->num, sizeof(u64)*num3->sz);
+    shrk(num3);
     return num3;
 }
 
@@ -320,6 +296,22 @@ megaunit* ct(){
         return NULL;
     }
     return num;
+}
+
+void shrk(megaunit* num){
+    long long int i = num->sz-1;
+    while(num->num[i] == 0){
+        if(i > 0){
+            i--;
+        } else{
+            free(num->num);
+            num->num = NULL;
+            num->sz = 0;
+            return;
+        }
+    }
+    num->sz = i+1;
+    realloc(num->num, sizeof(u64)*num->sz);
 }
 
 void dt(megaunit* num){
