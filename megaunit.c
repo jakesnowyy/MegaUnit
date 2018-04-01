@@ -13,6 +13,11 @@ typedef unsigned long long int u64;
 void add_asm(u64 num2_sz, u64 num3_sz, u64 num2, u64 num3);
 void sub_asm(u64 num2_sz, u64 num3_sz, u64 num2, u64 num3);
 
+void rsb_asm(u64 num_sz, u64 num);
+void sbl_asm(u64 num_sz, u64 num);
+
+void inc_asm(u64 num_sz, u64 num);
+
 typedef struct MegaUnit {
     u64* num;
     u64 sz;
@@ -24,12 +29,16 @@ const char * ok_cmd[] = {
 
 const int n_cmds = (sizeof (ok_cmd) / sizeof (const char *));
 
-megaunit* cpx(megaunit* num, u64 bigger);
+megaunit* cpx(megaunit* num, u64 bigger, int copy);
 
 megaunit* add(megaunit* num1, megaunit* num2);
 megaunit* sub(megaunit* num1, megaunit* num2);
+void sub_2(megaunit* num1, megaunit* num2);
 megaunit* mul(megaunit* num1, megaunit* num2);
-megaunit* dvv(megaunit* num1, megaunit* num2);
+megaunit* dvr(megaunit* num1, megaunit* num2);
+void inc(megaunit* num);
+
+megaunit* cnv(u64 n);
 
 int gt(megaunit* num1, megaunit* num2);
 int lt(megaunit* num1, megaunit* num2);
@@ -40,6 +49,9 @@ void ls(megaunit* num);
 void rs(megaunit* num);
 void pr(megaunit* num);
 megaunit* rd(char* s);
+
+void rsb(megaunit* num);
+void sbl(megaunit* num);
 
 megaunit* ct();
 void shrk(megaunit* num);
@@ -64,7 +76,7 @@ int main(){
     // printf("num2 << 2^64:\n");
     // ls(num2);
     // pr(num2);
-    megaunit* add_result = sub(num1, num2);
+    megaunit* add_result = dvr(num1, num2);
     pr(add_result);
     dt(num1);
     dt(num2);
@@ -105,11 +117,10 @@ int main(){
 		}
     } while (!quit_ok);
 
-
     return 0;
 }
 
-megaunit* cpx(megaunit* num, u64 bigger){
+megaunit* cpx(megaunit* num, u64 bigger, int copy){
     megaunit* n = ct();
     n->sz = num->sz + bigger;
     n->num = calloc(n->sz, sizeof(u64));
@@ -118,7 +129,8 @@ megaunit* cpx(megaunit* num, u64 bigger){
         printf("Error\n");
         return NULL;
     }
-    memcpy(n->num, num->num, sizeof(u64)*num->sz);
+    if(copy)
+        memcpy(n->num, num->num, sizeof(u64)*num->sz);
     return n;
 }
 
@@ -128,7 +140,7 @@ megaunit* add(megaunit* num1, megaunit* num2){
         n1 = num2;
         n2 = num1;
     }
-    megaunit* num3 = cpx(n1, 1);
+    megaunit* num3 = cpx(n1, 1, 1);
     add_asm(n2->sz, num3->sz, (u64)n2->num, (u64)num3->num);
     shrk(num3);
     return num3;
@@ -140,19 +152,87 @@ megaunit* sub(megaunit* num1, megaunit* num2){
         n1 = num2;
         n2 = num1;
     }
-    megaunit* num3 = cpx(n1, 0);
+    megaunit* num3 = cpx(n1, 0, 1);
     sub_asm(n2->sz, num3->sz, (u64)n2->num, (u64)num3->num);
     shrk(num3);
     return num3;
+}
+
+void sub_2(megaunit* num1, megaunit* num2){
+    megaunit *n1 = num1, *n2 = num2;
+    if(gt(num2, num1)){
+        n1 = num2;
+        n2 = num1;
+    }
+    sub_asm(n2->sz, n1->sz, (u64)n2->num, (u64)n1->num);
+    shrk(n1);
 }
 
 // megaunit* mul(megaunit* num1, megaunit* num2){
 
 // }
 
-// megaunit* dvv(megaunit* num1, megaunit* num2){
+megaunit* dvr(megaunit* num1, megaunit* num2){
+    megaunit *n1 = num1, *n2 = num2;
+    if(gt(num2, num1)){
+        n1 = num2;
+        n2 = num1;
+    }
+    megaunit* num3 = cpx(n1, 0, 0);
+    long long int i = 0;
+    while(gt(n1, n2)){
+        ls(n2);
+        i += 64;
+    }
+    if(i == 0)
+        num3->num[0] = 1;
+    else{
+        while(gt(n2, n1)){
+            rsb(n2);
+            i--;
+        }
+        sbl(n2);
+        i++;
+        while(i > 0){
+            rsb(n2);
+            i--;
+            //shift num3 to the left 1 bit
+            sbl(num3);
+            if(!lt(n1, n2)){
+                sub_2(n1, n2);
+                inc(num3);
+            }
+        }
+        // if(!lt(n1, n2)){
+        //     sub_2(n1, n2);
+        //     inc(num3);
+        // }
+    }
+    shrk(num3);
+    return num3;
+}
 
-// }
+void inc(megaunit* num){
+    num->sz++;
+    realloc(num->num, sizeof(u64)*num->sz);
+    num->num[num->sz-1] = 0;
+    inc_asm(num->sz, (u64)num->num);
+    //shrk
+    if(num->num[num->sz-1] == 0){
+        num->sz--;
+        realloc(num->num, sizeof(u64)*num->sz);
+    }
+}
+
+megaunit* cnv(u64 n){
+    if(n == 0)
+        return ct();
+    megaunit* num = ct();
+    num->sz = 1;
+    num->num = calloc(1, sizeof(u64));
+    num->num[0] = n;
+    return num;
+}
 
 int gt(megaunit* num1, megaunit* num2){
     if(num1->sz > num2->sz)
@@ -287,6 +367,22 @@ megaunit* rd(char* s){
         }
         return num;
     }
+}
+
+void rsb(megaunit* num){
+    if(num->sz > 0){
+        rsb_asm(num->sz, (u64)num->num);
+        shrk(num);
+    }
+}
+
+void sbl(megaunit* num){
+    if(num->num[num->sz-1]&~(1ull<<63)){
+        num->sz++;
+        realloc(num->num, sizeof(u64)*num->sz);
+        num->num[num->sz-1] = 0;
+    }
+    sbl_asm(num->sz, (u64)num->num); //TODO
 }
 
 megaunit* ct(){
