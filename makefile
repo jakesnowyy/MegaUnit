@@ -26,8 +26,8 @@ add_test:
 	$(eval CFLAGS += $(TEST))
 	@echo Test Enabled
 
-megaunit.obj:
-	nasm -fwin64 megaunit.s
+megaunit.obj: megaunit.s
+	@nasm -fwin64 $^
 
 $(EXEC): megaunit.obj megaunit.c
 	@$(CC) -o $@ $^ $(CFLAGS)
