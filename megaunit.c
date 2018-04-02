@@ -1,60 +1,70 @@
 /*
-
+  megaunit.c
+  **Code being refactored**
 
 */
+
+//includes
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+//defines
 #define FULL 0
-
 typedef unsigned long long int u64;
 
-void add_asm(u64 num2_sz, u64 num3_sz, u64 num2, u64 num3);
-void sub_asm(u64 num2_sz, u64 num3_sz, u64 num2, u64 num3);
-void mul_asm(u64 vec, u64 num1_sz, u64 num2_sz);
-
-void rsb_asm(u64 num_sz, u64 num);
-void sbl_asm(u64 num_sz, u64 num);
-
-void inc_asm(u64 num_sz, u64 num);
-
+//structs
 typedef struct MegaUnit {
     u64* num;
     u64 sz;
 } megaunit;
 
-const char * ok_cmd[] = {
-	"var", "eval", "quit"
-};
+//assembly functions
+void add_asm(u64 num2_sz, u64 num3_sz, u64 num2, u64 num3);
+void sub_asm(u64 num2_sz, u64 num3_sz, u64 num2, u64 num3);
+void mul_asm(u64 vec, u64 num1_sz, u64 num2_sz);
+void rsb_asm(u64 num_sz, u64 num);
+void sbl_asm(u64 num_sz, u64 num);
+void inc_asm(u64 num_sz, u64 num);
 
-const int n_cmds = (sizeof (ok_cmd) / sizeof (const char *));
+//C functions
+
+//First, three functions that create new megaunits
+//Very self-explanatory
+megaunit* new();
+megaunit* new_from_size(u64 size);
+megaunit* new_from_u64(u64 val);
+
+//Then we can compare with:
+int gt(megaunit* num1, megaunit* num2);
+int lt(megaunit* num1, megaunit* num2);
+int eq(megaunit* num1, megaunit* num2);
+int ne(megaunit* num1, megaunit* num2);
+
+//Shifts
+void shift_bits_right(megaunit* num, u64 bits);
+void shift_bits_left(megaunit* num, u64 bits);
+void shift_qwords_right(megaunit* num, u64 qwords);
+void shift_qwords_left(megaunit* num, u64 qwords);
+
+//Increment and decrement
+void inc(megaunit* num);
+void dec(megaunit* num);
 
 megaunit* cpx(megaunit* num, u64 bigger, int copy);
-
 megaunit* add(megaunit* num1, megaunit* num2);
 megaunit* add_2(megaunit* num1, megaunit* num2);
 megaunit* sub(megaunit* num1, megaunit* num2);
 megaunit* sub_2(megaunit* num1, megaunit* num2);
 megaunit* mul(megaunit* num1, megaunit* num2);
 megaunit* dvr(megaunit* num1, megaunit* num2);
-void inc(megaunit* num);
-
 megaunit* cnv(u64 n);
-
-int gt(megaunit* num1, megaunit* num2);
-int lt(megaunit* num1, megaunit* num2);
-int eq(megaunit* num1, megaunit* num2);
-int ne(megaunit* num1, megaunit* num2);
-
 void ls(megaunit* num);
 void rs(megaunit* num);
 void pr(megaunit* num);
 megaunit* rd(char* s);
-
 void rsb(megaunit* num);
 void sbl(megaunit* num);
-
 megaunit* ct();
 void shrk(megaunit* num);
 void dt(megaunit* num);
@@ -72,53 +82,11 @@ int main(){
     printf("num1 < num2 == %d\n", lt(num1, num2));
     printf("num1 == num2 == %d\n", eq(num1, num2));
     printf("num1 != num2 == %d\n", ne(num1, num2));
-    // printf("num1 >> 2^64:\n");
-    // rs(num1);
-    // pr(num1);
-    // printf("num2 << 2^64:\n");
-    // ls(num2);
-    // pr(num2);
     megaunit* result = mul(num1, num2);
     pr(result);
     dt(num1);
     dt(num2);
     dt(result);
-
-
-
-    #ifdef TEST
-        freopen("test.in", "r" , stdin);
-        freopen("test.out", "w", stdout);
-    #endif
-
-    char args[128];
-    char cmd[128];
-    int quit_ok = 0;
-    int i = 0;
-    do{
-        fgets(args, 128, stdin);
-        sscanf(args, "%s", cmd);
-        for(i = 0; i < n_cmds; i++){
-            if(!strcmp(cmd, ok_cmd[i])) break;
-        }
-        switch (i) {
-			case 0:
-				printf("Uninplemented\n");
-				break;
-			case 1:
-				printf("Uninplemented\n");
-				break;
-			case 2:
-				printf("OK\n");
-                quit_ok = 1;
-				break;
-			default:
-				printf("Error\n");
-                quit_ok = 1;
-				break;
-		}
-    } while (!quit_ok);
-
     return 0;
 }
 
@@ -237,7 +205,9 @@ megaunit* dvr(megaunit* num1, megaunit* num2){
         ret->num = calloc(1, sizeof(u64));
         return ret;
     }
-    megaunit* num3 = cpx(n1, 0, 0);
+    megaunit* num3 = ct();
+    num3->sz = 1;
+    num3->num = calloc(1, sizeof(u64));
     long long int i = 0;
     while(gt(n1, n2)){
         ls(n2);
@@ -399,6 +369,7 @@ void pr(megaunit* num){
         while(--i>0){
             putchar(s[i]);
         }
+        putchar(s[i]);
         dt(zero);
         dt(ten);
         dt(p);
@@ -485,9 +456,9 @@ void shrk(megaunit* num){
         if(i > 0){
             i--;
         } else{
-            free(num->num);
-            num->num = NULL;
-            num->sz = 0;
+            // realloc(num->num, sizeof(u64)*1);
+            // num->sz = 1;
+            // num->num[0] = 0;
             return;
         }
     }
