@@ -1,7 +1,7 @@
 global add_asm
 global sub_asm
 global mul_asm
-global div_asm
+; global div_asm
 
 global rsb_asm
 global sbl_asm
@@ -73,20 +73,59 @@ sub_end:
     ret
 
 mul_asm:
-    ; num1_sz => RCX
-    ; num2_sz => RDX
-    ; num2*   => R8
-    ; num3*   => R9
-
+    sub rsp, 32
+    push r12
+    push r13
+    push r14
+    push r15
+    ; vec     => RCX
+    ; num1_sz => RDX
+    ; num2_sz => R8
+    ; R9 => num1_sz
+    ; R10 => num_idx -- num2_sz
+    ; R11 => num_idx_2 -- num1_sz
+    ; R12 => num1*
+    ; R13 => num2*
+    ; RAX => tmp_and_mul
+    ; R14 => tmp
+    ; R15 => tmp_2 -- idx+idx_2
+    mov r9, rdx
+    mov r12, [rcx]
+    mov r13, [rcx+8]
+    mov r10, r8
+loop_out:
+    mov r11, r9
+    dec r10
+    js mul_end
+loop_in:
+    dec r11
+    js loop_out
+    mov r15, r10
+    add r15, r11
+    mov rax, [r13+8*r10]
+    mul qword [r12+8*r11]
+    jnc jump
+    mov r14, [rcx+8*r10+16]
+    mov [r14+8*r15+8], rdx
+jump:
+    mov r14, [rcx+8*r10+24]
+    mov [r14+8*r15], rax
+    jmp loop_in
+mul_end:
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    add rsp, 32
     ret
 
-div_asm:
-    ; num1_sz => RCX
-    ; num2_sz => RDX
-    ; num2*   => R8
-    ; num3*   => R9
+; div_asm:
+;     ; num1_sz => RCX
+;     ; num2_sz => RDX
+;     ; num2*   => R8
+;     ; num3*   => R9
 
-    ret
+;     ret
 
 rsb_asm:
     sub rsp, 32
