@@ -29,11 +29,10 @@ void inc_asm(u64 num_sz, u64 num);
 
 //C functions
 
-//First, three functions that create new megaunits
+//First, two functions that create new megaunits
 //Very self-explanatory
-megaunit* new();
+megaunit* new_unit_from_val(u64 val);
 megaunit* new_from_size(u64 size);
-megaunit* new_from_u64(u64 val);
 
 //Then we can compare with:
 int gt(megaunit* num1, megaunit* num2);
@@ -51,45 +50,40 @@ void shift_qwords_left(megaunit* num, u64 qwords);
 void inc(megaunit* num);
 void dec(megaunit* num);
 
-megaunit* cpx(megaunit* num, u64 bigger, int copy);
-megaunit* add(megaunit* num1, megaunit* num2);
-megaunit* add_2(megaunit* num1, megaunit* num2);
-megaunit* sub(megaunit* num1, megaunit* num2);
-megaunit* sub_2(megaunit* num1, megaunit* num2);
-megaunit* mul(megaunit* num1, megaunit* num2);
-megaunit* dvr(megaunit* num1, megaunit* num2);
-megaunit* cnv(u64 n);
-void ls(megaunit* num);
-void rs(megaunit* num);
-void pr(megaunit* num);
-megaunit* rd(char* s);
-void rsb(megaunit* num);
-void sbl(megaunit* num);
-megaunit* ct();
-void shrk(megaunit* num);
-void dt(megaunit* num);
+//Arithmetic operations
+void add_2nd_in_1st(megaunit* first, megaunit* second);
+void sub_2nd_from_1st(megaunit* first, megaunit* second);
+void mul_2nd_by_1st(megaunit* first, megaunit* second);
+void div_1st_by_2nd(megaunit* first, megaunit* second);
 
+//Resize (or fit)
+void resize_fit(megaunit* num);
+
+//Destructor
+void destroy(megaunit* num);
+
+
+//main function
 int main(){
 
-    char s[255];
-    fgets(s, 255, stdin);
-    megaunit* num1 = rd(s);
-    pr(num1);
-    fgets(s, 255, stdin);
-    megaunit* num2 = rd(s);
-    pr(num2);
-    printf("num1 > num2 == %d\n", gt(num1, num2));
-    printf("num1 < num2 == %d\n", lt(num1, num2));
-    printf("num1 == num2 == %d\n", eq(num1, num2));
-    printf("num1 != num2 == %d\n", ne(num1, num2));
-    megaunit* result = mul(num1, num2);
-    pr(result);
-    dt(num1);
-    dt(num2);
-    dt(result);
     return 0;
 }
 
+//comment
+megaunit* new_unit_from_val(u64 val){
+/*
+megaunit* new_unit_from_val(u64 val);
+*/
+
+}
+megaunit* new_from_size(u64 size);
+
+
+
+
+
+
+//NOT refactored code
 megaunit* cpx(megaunit* num, u64 bigger, int copy){
     megaunit* n = ct();
     n->sz = num->sz + bigger;
