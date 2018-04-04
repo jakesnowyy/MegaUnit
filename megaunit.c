@@ -69,7 +69,9 @@ int main(){
     return 0;
 }
 
-
+//
+//Creation section start
+//
 megaunit* new_unit_from_val(u64 val){
 /**
  * This function returns the address of 
@@ -93,6 +95,100 @@ megaunit* new_from_size(u64 size){
     new->num = calloc(new->sz, sizeof(u64));
     // calloc already initialized with zeroes
 }
+//
+//Creation section end
+//
+
+//
+//Comparison section start
+//
+int gt(megaunit* num1, megaunit* num2){
+/**
+ * This function returns 1 if num1 > num2
+ * and returns 0 otherwise
+ */
+    //First, we check the size
+    if(num1->sz > num2->sz)
+        return 1;
+    if(num1->sz == num2->sz){
+        //If their size is the same,\
+        we check every num[x]\
+        startig with x = sz-1
+        long long int i = num1->sz-1;
+        while(i >= 0){
+            if(num1->num[i] > num2->num[i])
+                return 1;
+            if(num1->num[i] < num2->num[i])
+                return 0;
+            i--;
+        }
+    }
+    //If they're equal, the second if end without\
+    returning, so we return 0. If we have not entered\
+    in none of the two if's, then num2_sz > num1_sz\
+    and we return 0.
+    return 0;
+}
+
+int lt(megaunit* num1, megaunit* num2){
+/**
+ * This function returns 1 if num1 < num2
+ * and returns 0 otherwise
+ */
+    //First, we check the size
+    if(num1->sz < num2->sz)
+        return 1;
+    if(num1->sz == num2->sz){
+        //If their size is the same,\
+        we check every num[x]\
+        startig with x = sz-1
+        long long int i = num1->sz-1;
+        while(i >= 0){
+            if(num1->num[i] < num2->num[i])
+                return 1;
+            if(num1->num[i] > num2->num[i])
+                return 0;
+            i--;
+        }
+    }
+    //If they're equal, the second if end without\
+    returning, so we return 0. If we have not entered\
+    in none of the two if's, then num2_sz < num1_sz\
+    and we return 0.
+    return 0;
+}
+
+int eq(megaunit* num1, megaunit* num2){
+/**
+ * This function returns 1 if num1 == num2
+ * and returns 0 otherwise
+ */
+    //If their sizes are different, they can't\
+    be equal (that's because even though the sz\
+    var represents how many blocks of sizeof(u64)\
+    have been allocated for a specific megaunit,\
+    whenever a megaunit gets smaller, the memory\
+    for it will be reallocated to fit the current\
+    number)
+    if(num1->sz != num2->sz)
+        return 0;
+    long long int i = num1->sz-1;
+    //If at some point they aren't equal, return 0
+    while(i >= 0){
+        if(num1->num[i] != num2->num[i])
+            return 0;
+        i--;
+    }
+    return 1;
+}
+
+int ne(megaunit* num1, megaunit* num2){
+    //Simply returns the opposite of 'eq'
+    return !(eq(num1, num2));
+}
+//
+//Comparison section end
+//
 
 
 
@@ -271,54 +367,6 @@ megaunit* cnv(u64 n){
     num->num = calloc(1, sizeof(u64));
     num->num[0] = n;
     return num;
-}
-
-int gt(megaunit* num1, megaunit* num2){
-    if(num1->sz > num2->sz)
-        return 1;
-    if(num1->sz == num2->sz){
-        long long int i = num1->sz-1;
-        while(i >= 0){
-            if(num1->num[i] > num2->num[i])
-                return 1;
-            if(num1->num[i] < num2->num[i])
-                return 0;
-            i--;
-        }
-    }
-    return 0;
-}
-
-int lt(megaunit* num1, megaunit* num2){
-    if(num1->sz < num2->sz)
-        return 1;
-    if(num1->sz == num2->sz){
-        long long int i = num1->sz-1;
-        while(i >= 0){
-            if(num1->num[i] < num2->num[i])
-                return 1;
-            if(num1->num[i] > num2->num[i])
-                return 0;
-            i--;
-        }
-    }
-    return 0;
-}
-
-int eq(megaunit* num1, megaunit* num2){
-    if(num1->sz != num2->sz)
-        return 0;
-    long long int i = num1->sz-1;
-    while(i >= 0){
-        if(num1->num[i] != num2->num[i])
-            return 0;
-        i--;
-    }
-    return 1;
-}
-
-int ne(megaunit* num1, megaunit* num2){
-    return !(eq(num1, num2));
 }
 
 void ls(megaunit* num){
