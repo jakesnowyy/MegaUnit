@@ -69,14 +69,30 @@ int main(){
     return 0;
 }
 
-//comment
-megaunit* new_unit_from_val(u64 val){
-/*
-megaunit* new_unit_from_val(u64 val);
-*/
 
+megaunit* new_unit_from_val(u64 val){
+/**
+ * This function returns the address of 
+ * a newly allocated megaunit object
+ * with size *1* and num[0] = val
+ */
+    megaunit* new = calloc(1, sizeof(megaunit));
+    new->sz = 1;
+    new->num = calloc(new->sz, sizeof(u64));
+    new->num[0] = val;
 }
-megaunit* new_from_size(u64 size);
+
+megaunit* new_from_size(u64 size){
+/**
+ * This function returns the address of
+ * a newly allocated megaunit object
+ * with size *size* and num[0:sz-1] = 0
+ */
+    megaunit* new = calloc(1, sizeof(megaunit));
+    new->sz = size;
+    new->num = calloc(new->sz, sizeof(u64));
+    // calloc already initialized with zeroes
+}
 
 
 
