@@ -111,9 +111,11 @@ int gt(megaunit* num1, megaunit* num2){
     if(num1->sz > num2->sz)
         return 1;
     if(num1->sz == num2->sz){
-        //If their size is the same,\
-        we check every num[x]\
-        startig with x = sz-1
+        /**
+         * If their size is the same,
+         * we check every num[x]
+         * startig with x = sz-1
+         */
         long long int i = num1->sz-1;
         while(i >= 0){
             if(num1->num[i] > num2->num[i])
@@ -123,10 +125,12 @@ int gt(megaunit* num1, megaunit* num2){
             i--;
         }
     }
-    //If they're equal, the second if end without\
-    returning, so we return 0. If we have not entered\
-    in none of the two if's, then num2_sz > num1_sz\
-    and we return 0.
+    /**
+     * If they're equal, the second if end without
+     * returning, so we return 0. If we have not entered
+     * in none of the two if's, then num2_sz > num1_sz
+     * and we return 0.
+     */
     return 0;
 }
 
@@ -139,9 +143,11 @@ int lt(megaunit* num1, megaunit* num2){
     if(num1->sz < num2->sz)
         return 1;
     if(num1->sz == num2->sz){
-        //If their size is the same,\
-        we check every num[x]\
-        startig with x = sz-1
+        /**
+         * If their size is the same,
+         * we check every num[x]
+         * startig with x = sz-1
+         */
         long long int i = num1->sz-1;
         while(i >= 0){
             if(num1->num[i] < num2->num[i])
@@ -151,10 +157,12 @@ int lt(megaunit* num1, megaunit* num2){
             i--;
         }
     }
-    //If they're equal, the second if end without\
-    returning, so we return 0. If we have not entered\
-    in none of the two if's, then num2_sz < num1_sz\
-    and we return 0.
+    /**
+     * If they're equal, the second if end without
+     * returning, so we return 0. If we have not entered
+     * in none of the two if's, then num2_sz < num1_sz
+     * and we return 0.
+     */
     return 0;
 }
 
@@ -163,13 +171,15 @@ int eq(megaunit* num1, megaunit* num2){
  * This function returns 1 if num1 == num2
  * and returns 0 otherwise
  */
-    //If their sizes are different, they can't\
-    be equal (that's because even though the sz\
-    var represents how many blocks of sizeof(u64)\
-    have been allocated for a specific megaunit,\
-    whenever a megaunit gets smaller, the memory\
-    for it will be reallocated to fit the current\
-    number)
+    /**
+     * If their sizes are different, they can't
+     * be equal (that's because even though the sz
+     * var represents how many blocks of sizeof(u64)
+     * have been allocated for a specific megaunit,
+     * whenever a megaunit gets smaller, the memory
+     * for it will be reallocated to fit the current
+     * number)
+     */
     if(num1->sz != num2->sz)
         return 0;
     long long int i = num1->sz-1;
