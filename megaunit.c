@@ -230,8 +230,27 @@ void shift_bits_right(megaunit* num, u64 bits){
 
 void shift_bits_left(megaunit* num, u64 bits){
 /**
- * 
+ * This function shifts all the bits of the megaunit
+ * to the left by 'bits' bits.
+ * The argument 'bits' is unsigned because only
+ * shitfs to the left will happen in this function
+ * It's highly recommended that the 'bits' argument
+ * be between 1 and 63, because this function may
+ * became very inefficient with a higher number of
+ * bit shifts (and also because there is a function
+ * that is specially made for qword shifts...)
  */
+    /**
+     * This function will first **increase**
+     * the megaunit size, so it can **make changes**
+     * and then **recheck** the megaunit size
+     */
+    num->sz += bits % 64;
+    realloc(num->num, num->sz * sizeof(u64));
+    while(bits--)
+        //This uses the assembly function 'rsb_asm'
+        sbl_asm(num->sz, (u64)num->num);
+    recheck_size(num);
     ;
 }
 
