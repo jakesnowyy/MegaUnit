@@ -57,7 +57,8 @@ void mul_2nd_by_1st(megaunit* first, megaunit* second);
 void div_1st_by_2nd(megaunit* first, megaunit* second);
 
 //Resize (or fit)
-void resize_fit(megaunit* num);
+//function previously named 'resize_fit'
+void recheck_size(megaunit* num);
 
 //Destructor
 void destroy(megaunit* num);
@@ -221,7 +222,10 @@ void shift_bits_right(megaunit* num, u64 bits){
      * mainly because this operation will only 
      * make a megaunit smaller
      */
-    ;
+    while(bits--)
+        //This uses the assembly function 'rsb_asm'
+        rsb_asm(num->sz, (u64)num->num);
+    recheck_size(num);
 }
 
 void shift_bits_left(megaunit* num, u64 bits){
