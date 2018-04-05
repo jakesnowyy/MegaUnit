@@ -200,7 +200,53 @@ int ne(megaunit* num1, megaunit* num2){
 //Comparison section end
 //
 
+//
+//Shifts section start
+//
+void shift_bits_right(megaunit* num, u64 bits){
+/**
+ * This function shifts all the bits of the megaunit
+ * to the right by 'bits' bits.
+ * The argument 'bits' is unsigned because only
+ * shitfs to the right will happen in this function
+ * It's highly recommended that the 'bits' argument
+ * be between 1 and 63, because this function may
+ * became very inefficient with a higher number of
+ * bit shifts (and also because there is a function
+ * that is specially made for qword shifts...)
+ */
+    /**
+     * This function will first **make changes**
+     * and then **recheck** the megaunit size
+     * mainly because this operation will only 
+     * make a megaunit smaller
+     */
+    ;
+}
 
+void shift_bits_left(megaunit* num, u64 bits){
+/**
+ * 
+ */
+    ;
+}
+
+void shift_qwords_right(megaunit* num, u64 qwords){
+/**
+ * 
+ */
+    ;
+}
+
+void shift_qwords_left(megaunit* num, u64 qwords){
+/**
+ * 
+ */
+    ;
+}
+//
+//Shifts section end
+//
 
 
 
