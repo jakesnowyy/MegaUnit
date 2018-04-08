@@ -66,6 +66,12 @@ void increase_size(megaunit* num, u64 size);
 void destroy(megaunit* num);
 void move(megaunit* destination, megaunit* origin);
 
+//Print
+void print_megaunit(megaunit* num);
+
+//Read
+megaunit* read_megaunit();
+
 
 //main function
 int main(){
@@ -405,7 +411,8 @@ void sub_2nd_from_1st(megaunit* first, megaunit* second){
 void mul_2nd_by_1st(megaunit* first, megaunit* second){
 /**
  * This function multiplies the two megaunits and
- * puts the result in the first megaunit
+ * puts the result in the first megaunit. The 
+ * second megaunit remains unchanged
  */
     /**
      * The mul_asm function works by multiplying
@@ -451,9 +458,39 @@ void mul_2nd_by_1st(megaunit* first, megaunit* second){
 
 void div_1st_by_2nd(megaunit* first, megaunit* second){
 /**
- * 
+ * This function divides the first megaunit
+ * by the second and stores the remainder in
+ * the first megaunit and the quocient in the
+ * second megaunit. Both are changed
  */
-    ;
+    /**
+     * This var will keep track of how many 
+     * bits the second megaunit is shifted
+     */
+    long long int shifted = 0;
+    // long long int bits = second->sz - first->sz;
+    megaunit* quo = new_from_size(first->sz);
+    do{
+        shift_qwords_left(second, 1);
+        shifted += 64;
+    } while(gt(first, second));
+    shift_qwords_right(second, 1);
+    shifted -= 64;
+    do{
+        shift_bits_left(second, 1);
+        shifted++;
+    } while(gt(first, second));
+    while(shifted > 0){
+        shift_bits_left(quo, 1);
+        shift_bits_right(second, 1);
+        shifted--;
+
+        while(first > second){
+            sub_2nd_from_1st(first, second);
+            inc(quo);
+        }
+    }
+    move(second, quo);
 }
 //
 //Arithmetic operations section end
