@@ -622,6 +622,7 @@ megaunit* read_megaunit(){
         destroy(digit);
         in = getchar();
     }
+    destroy(ten);
     return read;
 }
 //
