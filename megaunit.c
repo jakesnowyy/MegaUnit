@@ -87,11 +87,11 @@ int main(){
 
     add_2nd_in_1st(test1, test2);
     print_megaunit(test1);
-    sub_2nd_in_1st(test1, test2);
+    sub_2nd_from_1st(test1, test2);
     print_megaunit(test1);
-    mul_2nd_in_1st(test1, test2);
+    mul_2nd_by_1st(test1, test2);
     print_megaunit(test1);
-    div_2nd_in_1st(test1, test2);
+    div_1st_by_2nd(test1, test2);
     print_megaunit(test1);
     return 0;
 }
@@ -109,6 +109,7 @@ megaunit* new_unit_from_val(u64 val){
     new->sz = 1;
     new->num = calloc(new->sz, sizeof(u64));
     new->num[0] = val;
+    return new;
 }
 
 megaunit* new_from_size(u64 size){
@@ -121,6 +122,7 @@ megaunit* new_from_size(u64 size){
     new->sz = size;
     new->num = calloc(new->sz, sizeof(u64));
     // calloc already initialized with zeroes
+    return new;
 }
 //
 //Creation section end
@@ -382,7 +384,7 @@ void add_2nd_in_1st(megaunit* first, megaunit* second){
     megaunit* result = new_from_size(greatest->sz + 1);
     memcpy(result->num, greatest->num, sizeof(u64)*greatest->sz);
     //This function uses the assembly function add_asm
-    add_asm(smallest->sz, result->sz, smallest->num, result->num);
+    add_asm(smallest->sz, result->sz, (u64)smallest->num, (u64)result->num);
     recheck_size(result);
     /**
      * The result megaunit is going to be moved to
@@ -416,7 +418,7 @@ void sub_2nd_from_1st(megaunit* first, megaunit* second){
     megaunit* result = new_from_size(greatest->sz);
     memcpy(result->num, greatest->num, sizeof(u64)*greatest->sz);
     //This function uses the assembly function sub_asm
-    sub_asm(smallest->sz, result->sz, smallest->num, result->num);
+    sub_asm(smallest->sz, result->sz, (u64)smallest->num, (u64)result->num);
     recheck_size(result);
     /**
      * The result megaunit is going to be moved to
