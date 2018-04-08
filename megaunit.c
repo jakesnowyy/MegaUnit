@@ -251,21 +251,49 @@ void shift_bits_left(megaunit* num, u64 bits){
         //This uses the assembly function 'rsb_asm'
         sbl_asm(num->sz, (u64)num->num);
     recheck_size(num);
-    ;
 }
 
 void shift_qwords_right(megaunit* num, u64 qwords){
 /**
- * 
+ * This function shifts all the qwords of the megaunit
+ * to the right by 'qwords' qwords.
+ * The argument 'qwords' is unsigned because only
+ * shitfs to the right will happen in this function
  */
-    ;
+    /**
+     * This function will first **make changes**
+     * and then **recheck** the megaunit size
+     * mainly because this operation will only 
+     * make a megaunit smaller
+     */
+    long long int i = 0;
+    for(; i < num->sz-qwords; i++)
+        num->num[i] = num->num[i+qwords];
+    while(i < num->sz)
+        num->num[i] = 0;
+    recheck_size(num);
 }
 
 void shift_qwords_left(megaunit* num, u64 qwords){
 /**
- * 
+ * This function shifts all the qwords of the megaunit
+ * to the right by 'qwords' qwords.
+ * The argument 'qwords' is unsigned because only
+ * shitfs to the right will happen in this function
  */
-    ;
+    /**
+     * This function will first **increase**
+     * the megaunit size, so it can **make changes**
+     * and then **recheck** the megaunit size
+     */
+    num->sz += qwords;
+    realloc(num->num, num->sz * sizeof(u64));
+    long long int i = num->sz-1;
+    for(; i >= qwords; i--)
+        num->num[i] = num->num[i-qwords];
+    while(i >= 0)
+        num->num[i] = 0;
+    recheck_size(num);
 }
 //
 //Shifts section end
