@@ -7,6 +7,7 @@ global rsb_asm
 global sbl_asm
 
 global inc_asm
+global dec_asm
 
 section .text
 bits 64
@@ -169,7 +170,7 @@ inc_end:
     add rsp, 32
     ret
 
-sub_asm:
+dec_asm:
     sub rsp, 32
     ; num_sz  => RCX
     ; num     => RDX
@@ -180,14 +181,14 @@ sub_asm:
     xor r10, r10 ; num_idx = 0; carry = 0;
     stc
     ; inc rcx
-sub_loop:
-    jnc sub_end
+dec_loop:
+    jnc dec_end
     dec rcx
-    jz sub_end ; if zero goto end
+    jz dec_end ; if zero goto end
     sbb [rdx+8*r10], byte 0
     inc r10
-    jmp sub_loop
-sub_end:
+    jmp dec_loop
+dec_end:
     add rsp, 32
     ret
 
