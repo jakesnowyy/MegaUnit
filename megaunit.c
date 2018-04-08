@@ -592,7 +592,18 @@ void print_megaunit(megaunit* num){
 //Read section start
 //
 megaunit* read_megaunit(){
-
+    megaunit* read = new_from_size(1);
+    megaunit* ten = new_unit_from_val(10);
+    megaunit* digit;
+    char in = getchar();
+    while(in != '\n'){
+        mul_2nd_by_1st(read, ten);
+        digit = new_unit_from_val(in-'0');
+        add_2nd_in_1st(read, digit);
+        destroy(digit);
+        in = getchar();
+    }
+    return read;
 }
 //
 //Read section end
