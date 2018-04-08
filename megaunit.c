@@ -62,8 +62,9 @@ void div_1st_by_2nd(megaunit* first, megaunit* second);
 void recheck_size(megaunit* num);
 void increase_size(megaunit* num, u64 size);
 
-//Destructor
+//Destructor and move
 void destroy(megaunit* num);
+void move(megaunit* destination, megaunit* origin);
 
 
 //main function
@@ -361,11 +362,10 @@ void add_2nd_in_1st(megaunit* first, megaunit* second){
     add_asm(smallest->sz, result->sz, smallest->num, result->num);
     recheck_size(result);
     /**
-     * The first megaunit is going to be destroyed
-     * and replaced by the result megaunit
+     * The result megaunit is going to be moved to
+     * the first megaunit
      */
-    destroy(first);
-    first = result;
+    move(first, result);
     //This should do the trick
     //These comments will be removed if it works properly
 }
@@ -396,16 +396,16 @@ void sub_2nd_from_1st(megaunit* first, megaunit* second){
     sub_asm(smallest->sz, result->sz, smallest->num, result->num);
     recheck_size(result);
     /**
-     * The first megaunit is going to be destroyed
-     * and replaced by the result megaunit
+     * The result megaunit is going to be moved to
+     * the first megaunit
      */
-    destroy(first);
-    first = result;
+    move(first, result);
 }
 
 void mul_2nd_by_1st(megaunit* first, megaunit* second){
 /**
- * 
+ * This function multiplies the two megaunits and
+ * puts the result in the first megaunit
  */
     ;
 }
@@ -449,7 +449,7 @@ void increase_size(megaunit* num, u64 size){
 //
 
 //
-//Destructor section start
+//Destructor and move section start
 //
 void destroy(megaunit* num){
 /**
@@ -461,8 +461,21 @@ void destroy(megaunit* num){
     free(num);
     num = NULL;
 }
+
+void move(megaunit* destination, megaunit* origin){
+/**
+ * This function frees the 'num' of destination,
+ * change it so it points to the origin's 'num'
+ * and frees the origin megaunit
+ */
+    free(destination->num);
+    destination->num = origin->num;
+    origin->num = NULL;
+    free(origin);
+    origin = NULL;
+}
 //
-//Destructor section end
+//Destructor and move section end
 //
 
 
