@@ -337,9 +337,37 @@ void dec(megaunit* num){
 //
 void add_2nd_in_1st(megaunit* first, megaunit* second){
 /**
- * 
+ * This function adds the second megaunit into
+ * the first. The second remains unchanged and
+ * the first becames the second plus the first
  */
-    ;
+    /**
+     * The add_asm function only works by adding
+     * the smallest to the greatest megaunit
+     */
+    megaunit* greatest = first;
+    megaunit* smallest = second;
+    if(gt(smallest, greatest)){
+        greatest = second;
+        smallest = first;
+    }
+    /**
+     * The result megaunit is created based on
+     * the greatest, but with size +1
+     */
+    megaunit* result = new_from_size(greatest->sz + 1);
+    memcpy(result->num, greatest->num, sizeof(u64)*greatest->sz);
+    //This function uses the assembly function add_asm
+    add_asm(smallest->sz, result->sz, smallest->num, result->num);
+    recheck_size(result);
+    /**
+     * The first megaunit is going to be destroyed
+     * and replaced by the result megaunit
+     */
+    destroy(first);
+    first = result;
+    //This should do the trick
+    //These comments will be removed if it works properly
 }
 
 void sub_2nd_from_1st(megaunit* first, megaunit* second){
@@ -416,6 +444,19 @@ void destroy(megaunit* num){
 
 //kk
 void increase_size(megaunit* num, u64 size){
+}
+
+megaunit* new_from_megaunit(megaunit* num);
+megaunit* new_from_megaunit(megaunit* num){
+/**
+ * This function returns the address of
+ * a newly allocated megaunit object
+ * with the same contents as the 'num' arg
+ */
+    megaunit* new = calloc(1, sizeof(megaunit));
+    new->sz = num->sz;
+    new->num = calloc(new->sz, sizeof(u64));
+    memcpy(new->num, num->num, sizeof(u64)*new->sz);
 }
 
 megaunit* cpx(megaunit* num, u64 bigger, int copy){
