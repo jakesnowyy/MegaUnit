@@ -59,6 +59,7 @@ void div_1st_by_2nd(megaunit* first, megaunit* second);
 //Resize (or fit)
 //function previously named 'resize_fit'
 void recheck_size(megaunit* num);
+void increase_size(megaunit* num, u64 size);
 
 //Destructor
 void destroy(megaunit* num);
@@ -245,8 +246,7 @@ void shift_bits_left(megaunit* num, u64 bits){
      * the megaunit size, so it can **make changes**
      * and then **recheck** the megaunit size
      */
-    num->sz += bits % 64;
-    realloc(num->num, num->sz * sizeof(u64));
+    increase_size(num, bits%64);
     while(bits--)
         //This uses the assembly function 'rsb_asm'
         sbl_asm(num->sz, (u64)num->num);
@@ -286,8 +286,7 @@ void shift_qwords_left(megaunit* num, u64 qwords){
      * the megaunit size, so it can **make changes**
      * and then **recheck** the megaunit size
      */
-    num->sz += qwords;
-    realloc(num->num, num->sz * sizeof(u64));
+    increase_size(num, qwords);
     long long int i = num->sz-1;
     for(; i >= qwords; i--)
         num->num[i] = num->num[i-qwords];
@@ -299,10 +298,29 @@ void shift_qwords_left(megaunit* num, u64 qwords){
 //Shifts section end
 //
 
+//
+//Increment and decrement section start
+//
+void inc(megaunit* num){
 
+}
+
+void dec(megaunit* num){
+
+}
+//
+//Increment and decrement section end
+//
 
 
 //NOT refactored code
+
+//kk
+void increase_size(megaunit* num, u64 size){
+    num->sz += size;
+    realloc(num->num, num->sz * sizeof(u64));
+}
+
 megaunit* cpx(megaunit* num, u64 bigger, int copy){
     megaunit* n = ct();
     n->sz = num->sz + bigger;
