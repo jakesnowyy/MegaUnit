@@ -297,7 +297,7 @@ void shift_qwords_right(megaunit* num, u64 qwords){
     for(; i < num->sz-qwords; i++)
         num->num[i] = num->num[i+qwords];
     while(i < num->sz)
-        num->num[i] = 0;
+        num->num[i++] = 0;
     recheck_size(num);
 }
 
@@ -318,7 +318,7 @@ void shift_qwords_left(megaunit* num, u64 qwords){
     for(; i >= qwords; i--)
         num->num[i] = num->num[i-qwords];
     while(i >= 0)
-        num->num[i] = 0;
+        num->num[i--] = 0;
     recheck_size(num);
 }
 //
