@@ -392,7 +392,7 @@ void sub_2nd_from_1st(megaunit* first, megaunit* second){
      */
     megaunit* result = new_from_size(greatest->sz);
     memcpy(result->num, greatest->num, sizeof(u64)*greatest->sz);
-    //This function uses the assembly function add_asm
+    //This function uses the assembly function sub_asm
     sub_asm(smallest->sz, result->sz, smallest->num, result->num);
     recheck_size(result);
     /**
@@ -407,7 +407,46 @@ void mul_2nd_by_1st(megaunit* first, megaunit* second){
  * This function multiplies the two megaunits and
  * puts the result in the first megaunit
  */
-    ;
+    /**
+     * The mul_asm function works by multiplying
+     * every qword of the second by the first
+     * and placing the results on several megaunits
+     * It is more efficient (probably) if you give
+     * it an array with 2*smallest->sz megaunits
+     * with smallest_sz + greatest_sz qwords in each
+     */
+    megaunit* greatest = first;
+    megaunit* smallest = second;
+    if(gt(smallest, greatest)){
+        greatest = second;
+        smallest = first;
+    }
+    long long int array_size = smallest->sz*2;
+    long long int megaunits_size = smallest->sz + greatest->sz;
+
+    //This creates the array of 2*smallest->sz (megaunit*)s
+    megaunit** nums = calloc(array_size, sizeof(megaunit*));
+
+    //This creates each individual megaunit and zero initializes 
+    long long int i = 0;
+    for(i = 0; i < array_size; i++){
+        nums[i] = new_from_size(megaunits_size);
+    }
+    u64* vec = calloc(array_size + 2, sizeof(u64));
+    vec[0] = (u64)greatest->num;
+    vec[1] = (u64)smallest->num;
+    for(i = 0; i < array_size; i++){
+        vec[i+2] = (u64)nums[i]->num;
+    }
+    mul_asm((u64)vec, greatest->sz, smallest->sz);
+    for(i = 1; i < array_size; i++){
+        add_2nd_in_1st(nums[0], nums[i]);
+        destroy(nums[i]);
+    }
+    move(first, nums[0]);
+    free(nums);
+    free(vec);
+    //Maybe its better to set them all to NULL before freeing
 }
 
 void div_1st_by_2nd(megaunit* first, megaunit* second){
