@@ -332,13 +332,90 @@ void dec(megaunit* num){
 //Increment and decrement section end
 //
 
+//
+//Arithmetic operations section start
+//
+void add_2nd_in_1st(megaunit* first, megaunit* second){
+/**
+ * 
+ */
+    ;
+}
+
+void sub_2nd_from_1st(megaunit* first, megaunit* second){
+/**
+ * 
+ */
+    ;
+}
+
+void mul_2nd_by_1st(megaunit* first, megaunit* second){
+/**
+ * 
+ */
+    ;
+}
+
+void div_1st_by_2nd(megaunit* first, megaunit* second){
+/**
+ * 
+ */
+    ;
+}
+//
+//Arithmetic operations section end
+//
+
+//
+//Resize and fit section start
+//
+void recheck_size(megaunit* num){
+/**
+ * This function checks if the megaunit
+ * needs all the current allocated size
+ * If it doesn't, it will be allocated
+ * only the needed size
+ */
+    long long int i = num->sz-1;
+    while(i > 0 && num->num[i] == 0)
+        num->sz--;
+    realloc(num->num, num->sz * sizeof(u64));
+}
+
+void increase_size(megaunit* num, u64 size){
+/**
+ * This function increases the size of the
+ * megaunit by 'size' qwords
+ */
+    num->sz += size;
+    realloc(num->num, num->sz * sizeof(u64));
+}
+//
+//Resize and fit section end
+//
+
+//
+//Destructor section start
+//
+void destroy(megaunit* num){
+/**
+ * This function frees all the allocated qwords
+ * for the megaunit and frees the megaunit itself
+ */
+    free(num->num);
+    num->num = NULL;
+    free(num);
+    num = NULL;
+}
+//
+//Destructor section end
+//
+
 
 //NOT refactored code
 
 //kk
 void increase_size(megaunit* num, u64 size){
-    num->sz += size;
-    realloc(num->num, num->sz * sizeof(u64));
 }
 
 megaunit* cpx(megaunit* num, u64 bigger, int copy){
