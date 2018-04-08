@@ -554,6 +554,49 @@ void move(megaunit* destination, megaunit* origin){
 //Destructor and move section end
 //
 
+//
+//Print section start
+//
+void print_megaunit(megaunit* num){
+    megaunit* ten = new_unit_from_val(10);
+    megaunit* zero = new_unit_from_val(0);
+
+    char* s = calloc(num->sz*22, sizeof(char));
+    long long int i = 0;
+    
+    megaunit* copy = new_from_size(num->sz);
+    memcpy(copy->num, num->num, num->sz*sizeof(u64));
+
+    while(gt(copy, zero)){
+        div_1st_by_2nd(copy, ten);
+        s[i] = (char)copy->num[0]+'0';
+        i++;
+        move(copy, ten);
+        ten = new_unit_from_val(10);
+    }
+    while(--i>0){
+        putchar(s[i]);
+    }
+    putchar(s[i]);
+    putchar('\n');
+    free(s);
+    destroy(zero);
+    destroy(ten);
+    destroy(copy);    
+}
+//
+//Print section end
+//
+
+//
+//Read section start
+//
+megaunit* read_megaunit(){
+
+}
+//
+//Read section end
+//
 
 //NOT refactored code
 
