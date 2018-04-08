@@ -372,9 +372,35 @@ void add_2nd_in_1st(megaunit* first, megaunit* second){
 
 void sub_2nd_from_1st(megaunit* first, megaunit* second){
 /**
- * 
+ * This function subtracts the second megaunit of
+ * the first. The second remains unchanged and
+ * the first becames the second subtracted by the first
  */
-    ;
+    /**
+     * The sub_asm function only works by subtracting
+     * the greatest by the smallest megaunit
+     */
+    megaunit* greatest = first;
+    megaunit* smallest = second;
+    if(gt(smallest, greatest)){
+        greatest = second;
+        smallest = first;
+    }
+    /**
+     * The result megaunit is created based on
+     * the greatest and with the same size
+     */
+    megaunit* result = new_from_size(greatest->sz);
+    memcpy(result->num, greatest->num, sizeof(u64)*greatest->sz);
+    //This function uses the assembly function add_asm
+    sub_asm(smallest->sz, result->sz, smallest->num, result->num);
+    recheck_size(result);
+    /**
+     * The first megaunit is going to be destroyed
+     * and replaced by the result megaunit
+     */
+    destroy(first);
+    first = result;
 }
 
 void mul_2nd_by_1st(megaunit* first, megaunit* second){
