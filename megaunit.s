@@ -169,6 +169,28 @@ inc_end:
     add rsp, 32
     ret
 
+sub_asm:
+    sub rsp, 32
+    ; num_sz  => RCX
+    ; num     => RDX
+    ; R8 => 
+    ; R9 => 
+    ; R10 => num_idx
+    ; R11 => temp_guy
+    xor r10, r10 ; num_idx = 0; carry = 0;
+    stc
+    ; inc rcx
+sub_loop:
+    jnc sub_end
+    dec rcx
+    jz sub_end ; if zero goto end
+    sbb [rdx+8*r10], byte 0
+    inc r10
+    jmp sub_loop
+sub_end:
+    add rsp, 32
+    ret
+
 sbl_asm:
     sub rsp, 32
     ; num_sz  => RCX

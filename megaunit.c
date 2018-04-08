@@ -26,6 +26,7 @@ void mul_asm(u64 vec, u64 num1_sz, u64 num2_sz);
 void rsb_asm(u64 num_sz, u64 num);
 void sbl_asm(u64 num_sz, u64 num);
 void inc_asm(u64 num_sz, u64 num);
+void dec_asm(u64 num_sz, u64 num);
 
 //C functions
 
@@ -302,11 +303,30 @@ void shift_qwords_left(megaunit* num, u64 qwords){
 //Increment and decrement section start
 //
 void inc(megaunit* num){
-
+/**
+ * This function adds one to the megaunit arg
+ */
+    /**
+     * This function will first **increase**
+     * the megaunit size, so it can **make changes**
+     * and then **recheck** the megaunit size
+     */
+    increase_size(num, 1);
+    //This function uses the assembly function inc_asm
+    inc_asm(num->sz, (u64)num->num);
+    recheck_size(num);
 }
 
 void dec(megaunit* num){
-
+/**
+ * This function subtracts one from the arg
+ */
+    /**
+     * This function will first **make changes**
+     * and then **recheck** the megaunit size
+     */
+    dec_asm(num->sz, (u64)num->num);
+    recheck_size(num);
 }
 //
 //Increment and decrement section end
