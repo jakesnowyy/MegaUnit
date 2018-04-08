@@ -525,8 +525,8 @@ void recheck_size(megaunit* num){
  * If it doesn't, it will be allocated
  * only the needed size
  */
-    long long int i = num->sz-1;
-    while(i > 0 && num->num[i] == 0)
+    long long int i = num->sz;
+    while(--i > 0 && num->num[i] == 0)
         num->sz--;
     realloc(num->num, num->sz * sizeof(u64));
 }
