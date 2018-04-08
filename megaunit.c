@@ -75,7 +75,24 @@ megaunit* read_megaunit();
 
 //main function
 int main(){
+    megaunit* test1 = read_megaunit();
+    print_megaunit(test1);
+    megaunit* test2 = read_megaunit();
+    print_megaunit(test2);
 
+    // shift_qwords_left(test1, 1);
+    // print_megaunit(test1);
+    // shift_qwords_right(test2, 1);
+    // print_megaunit(test2);
+
+    add_2nd_in_1st(test1, test2);
+    print_megaunit(test1);
+    sub_2nd_in_1st(test1, test2);
+    print_megaunit(test1);
+    mul_2nd_in_1st(test1, test2);
+    print_megaunit(test1);
+    div_2nd_in_1st(test1, test2);
+    print_megaunit(test1);
     return 0;
 }
 
@@ -609,358 +626,358 @@ megaunit* read_megaunit(){
 //Read section end
 //
 
-//NOT refactored code
+// //NOT refactored code
 
-//kk
-void increase_size(megaunit* num, u64 size){
-}
+// //kk
+// void increase_size(megaunit* num, u64 size){
+// }
 
-megaunit* new_from_megaunit(megaunit* num);
-megaunit* new_from_megaunit(megaunit* num){
-/**
- * This function returns the address of
- * a newly allocated megaunit object
- * with the same contents as the 'num' arg
- */
-    megaunit* new = calloc(1, sizeof(megaunit));
-    new->sz = num->sz;
-    new->num = calloc(new->sz, sizeof(u64));
-    memcpy(new->num, num->num, sizeof(u64)*new->sz);
-}
+// megaunit* new_from_megaunit(megaunit* num);
+// megaunit* new_from_megaunit(megaunit* num){
+// /**
+//  * This function returns the address of
+//  * a newly allocated megaunit object
+//  * with the same contents as the 'num' arg
+//  */
+//     megaunit* new = calloc(1, sizeof(megaunit));
+//     new->sz = num->sz;
+//     new->num = calloc(new->sz, sizeof(u64));
+//     memcpy(new->num, num->num, sizeof(u64)*new->sz);
+// }
 
-megaunit* cpx(megaunit* num, u64 bigger, int copy){
-    megaunit* n = ct();
-    n->sz = num->sz + bigger;
-    n->num = calloc(n->sz, sizeof(u64));
-    if(n->num == NULL){
-        //This gave me an error, but I don't care right now
-        printf("Error\n");
-        return NULL;
-    }
-    if(copy)
-        memcpy(n->num, num->num, sizeof(u64)*num->sz);
-    return n;
-}
+// megaunit* cpx(megaunit* num, u64 bigger, int copy){
+//     megaunit* n = ct();
+//     n->sz = num->sz + bigger;
+//     n->num = calloc(n->sz, sizeof(u64));
+//     if(n->num == NULL){
+//         //This gave me an error, but I don't care right now
+//         printf("Error\n");
+//         return NULL;
+//     }
+//     if(copy)
+//         memcpy(n->num, num->num, sizeof(u64)*num->sz);
+//     return n;
+// }
 
-megaunit* add(megaunit* num1, megaunit* num2){
-    megaunit *n1 = num1, *n2 = num2;
-    if(gt(num2, num1)){
-        n1 = num2;
-        n2 = num1;
-    }
-    megaunit* num3 = cpx(n1, 1, 1);
-    add_asm(n2->sz, num3->sz, (u64)n2->num, (u64)num3->num);
-    shrk(num3);
-    return num3;
-}
+// megaunit* add(megaunit* num1, megaunit* num2){
+//     megaunit *n1 = num1, *n2 = num2;
+//     if(gt(num2, num1)){
+//         n1 = num2;
+//         n2 = num1;
+//     }
+//     megaunit* num3 = cpx(n1, 1, 1);
+//     add_asm(n2->sz, num3->sz, (u64)n2->num, (u64)num3->num);
+//     shrk(num3);
+//     return num3;
+// }
 
-megaunit* add_2(megaunit* num1, megaunit* num2){
-    megaunit *n1 = num1, *n2 = num2;
-    if(gt(num2, num1)){
-        n1 = num2;
-        n2 = num1;
-    }
-    n1->sz++;
-    realloc(n1->num, sizeof(u64)*n1->sz);
-    n1->num[n1->sz-1] = 0;
-    add_asm(n2->sz, n1->sz, (u64)n2->num, (u64)n1->num);
-    if(n1->num[n1->sz-1] == 0){
-        n1->sz--;
-        realloc(n1->num, sizeof(u64)*n1->sz);
-    }
-    return n1;
-}
+// megaunit* add_2(megaunit* num1, megaunit* num2){
+//     megaunit *n1 = num1, *n2 = num2;
+//     if(gt(num2, num1)){
+//         n1 = num2;
+//         n2 = num1;
+//     }
+//     n1->sz++;
+//     realloc(n1->num, sizeof(u64)*n1->sz);
+//     n1->num[n1->sz-1] = 0;
+//     add_asm(n2->sz, n1->sz, (u64)n2->num, (u64)n1->num);
+//     if(n1->num[n1->sz-1] == 0){
+//         n1->sz--;
+//         realloc(n1->num, sizeof(u64)*n1->sz);
+//     }
+//     return n1;
+// }
 
-megaunit* sub(megaunit* num1, megaunit* num2){
-    megaunit *n1 = num1, *n2 = num2;
-    if(gt(num2, num1)){
-        n1 = num2;
-        n2 = num1;
-    }
-    megaunit* num3 = cpx(n1, 0, 1);
-    sub_asm(n2->sz, num3->sz, (u64)n2->num, (u64)num3->num);
-    shrk(num3);
-    return num3;
-}
+// megaunit* sub(megaunit* num1, megaunit* num2){
+//     megaunit *n1 = num1, *n2 = num2;
+//     if(gt(num2, num1)){
+//         n1 = num2;
+//         n2 = num1;
+//     }
+//     megaunit* num3 = cpx(n1, 0, 1);
+//     sub_asm(n2->sz, num3->sz, (u64)n2->num, (u64)num3->num);
+//     shrk(num3);
+//     return num3;
+// }
 
-megaunit* sub_2(megaunit* num1, megaunit* num2){
-    megaunit *n1 = num1, *n2 = num2;
-    if(gt(num2, num1)){
-        n1 = num2;
-        n2 = num1;
-    }
-    sub_asm(n2->sz, n1->sz, (u64)n2->num, (u64)n1->num);
-    shrk(n1);
-    return n1;
-}
+// megaunit* sub_2(megaunit* num1, megaunit* num2){
+//     megaunit *n1 = num1, *n2 = num2;
+//     if(gt(num2, num1)){
+//         n1 = num2;
+//         n2 = num1;
+//     }
+//     sub_asm(n2->sz, n1->sz, (u64)n2->num, (u64)n1->num);
+//     shrk(n1);
+//     return n1;
+// }
 
-megaunit* mul(megaunit* num1, megaunit* num2){
-    megaunit *n1 = num1, *n2 = num2;
-    if(gt(num2, num1)){
-        n1 = num2;
-        n2 = num1;
-    }
-    long long int tam = n2->sz*2;
-    megaunit** nums = calloc(tam, sizeof(megaunit*));
-    long long int i = 0;
-    for(i = 0; i < tam; i++){
-        nums[i] = ct();
-    }
-    u64* vec = calloc(tam+2, sizeof(u64));
-    vec[0] = (u64)n1->num;
-    vec[1] = (u64)n2->num;
-    for(i = 0; i < tam; i++){
-        nums[i]->num = calloc(n2->sz+n1->sz, sizeof(u64));
-        nums[i]->sz = n2->sz+n1->sz;
-        vec[i+2] = (u64)nums[i]->num;
-    }
-    mul_asm((u64)vec, n1->sz, n2->sz);
-    megaunit* num3 = ct();
-    num3->sz = 1; num3->num = calloc(1, sizeof(u64));
-    megaunit* tmp;
-    // megaunit* num3 = ct();
-    // num3->sz = n2->sz+n1->sz;
-    // num3->num = calloc(num3->sz, sizeof(u64));
-    // for(i = 0; i < tam; i++){
-    //     pr(nums[i]);
-    // }
-    pr(num3);
-    for(i = 0; i < tam; i++){
-        tmp = add(num3, nums[i]);
-        dt(nums[i]);
-        dt(num3);
-        num3 = tmp;
-    }
-    shrk(num3);
-    return num3;
-}
+// megaunit* mul(megaunit* num1, megaunit* num2){
+//     megaunit *n1 = num1, *n2 = num2;
+//     if(gt(num2, num1)){
+//         n1 = num2;
+//         n2 = num1;
+//     }
+//     long long int tam = n2->sz*2;
+//     megaunit** nums = calloc(tam, sizeof(megaunit*));
+//     long long int i = 0;
+//     for(i = 0; i < tam; i++){
+//         nums[i] = ct();
+//     }
+//     u64* vec = calloc(tam+2, sizeof(u64));
+//     vec[0] = (u64)n1->num;
+//     vec[1] = (u64)n2->num;
+//     for(i = 0; i < tam; i++){
+//         nums[i]->num = calloc(n2->sz+n1->sz, sizeof(u64));
+//         nums[i]->sz = n2->sz+n1->sz;
+//         vec[i+2] = (u64)nums[i]->num;
+//     }
+//     mul_asm((u64)vec, n1->sz, n2->sz);
+//     megaunit* num3 = ct();
+//     num3->sz = 1; num3->num = calloc(1, sizeof(u64));
+//     megaunit* tmp;
+//     // megaunit* num3 = ct();
+//     // num3->sz = n2->sz+n1->sz;
+//     // num3->num = calloc(num3->sz, sizeof(u64));
+//     // for(i = 0; i < tam; i++){
+//     //     pr(nums[i]);
+//     // }
+//     pr(num3);
+//     for(i = 0; i < tam; i++){
+//         tmp = add(num3, nums[i]);
+//         dt(nums[i]);
+//         dt(num3);
+//         num3 = tmp;
+//     }
+//     shrk(num3);
+//     return num3;
+// }
 
-megaunit* dvr(megaunit* num1, megaunit* num2){
-    megaunit *n1 = num1, *n2 = num2;
-    if(gt(num2, num1)){
-        megaunit* ret = ct();
-        ret->sz = 1;
-        ret->num = calloc(1, sizeof(u64));
-        return ret;
-    }
-    megaunit* num3 = ct();
-    num3->sz = 1;
-    num3->num = calloc(1, sizeof(u64));
-    long long int i = 0;
-    while(gt(n1, n2)){
-        ls(n2);
-        i += 64;
-    }
-    if(i == 0)
-        num3->num[0] = 1;
-    else{
-        while(gt(n2, n1)){
-            rsb(n2);
-            i--;
-        }
-        sbl(n2);
-        i++;
-        while(i > 0){
-            rsb(n2);
-            i--;
-            //shift num3 to the left 1 bit
-            sbl(num3);
-            if(!lt(n1, n2)){
-                sub_2(n1, n2);
-                inc(num3);
-            }
-        }
-        // if(!lt(n1, n2)){
-        //     sub_2(n1, n2);
-        //     inc(num3);
-        // }
-    }
-    shrk(num3);
-    return num3;
-}
+// megaunit* dvr(megaunit* num1, megaunit* num2){
+//     megaunit *n1 = num1, *n2 = num2;
+//     if(gt(num2, num1)){
+//         megaunit* ret = ct();
+//         ret->sz = 1;
+//         ret->num = calloc(1, sizeof(u64));
+//         return ret;
+//     }
+//     megaunit* num3 = ct();
+//     num3->sz = 1;
+//     num3->num = calloc(1, sizeof(u64));
+//     long long int i = 0;
+//     while(gt(n1, n2)){
+//         ls(n2);
+//         i += 64;
+//     }
+//     if(i == 0)
+//         num3->num[0] = 1;
+//     else{
+//         while(gt(n2, n1)){
+//             rsb(n2);
+//             i--;
+//         }
+//         sbl(n2);
+//         i++;
+//         while(i > 0){
+//             rsb(n2);
+//             i--;
+//             //shift num3 to the left 1 bit
+//             sbl(num3);
+//             if(!lt(n1, n2)){
+//                 sub_2(n1, n2);
+//                 inc(num3);
+//             }
+//         }
+//         // if(!lt(n1, n2)){
+//         //     sub_2(n1, n2);
+//         //     inc(num3);
+//         // }
+//     }
+//     shrk(num3);
+//     return num3;
+// }
 
-void inc(megaunit* num){
-    num->sz++;
-    realloc(num->num, sizeof(u64)*num->sz);
-    num->num[num->sz-1] = 0;
-    inc_asm(num->sz, (u64)num->num);
-    //shrk
-    if(num->num[num->sz-1] == 0){
-        num->sz--;
-        realloc(num->num, sizeof(u64)*num->sz);
-    }
-}
+// void inc(megaunit* num){
+//     num->sz++;
+//     realloc(num->num, sizeof(u64)*num->sz);
+//     num->num[num->sz-1] = 0;
+//     inc_asm(num->sz, (u64)num->num);
+//     //shrk
+//     if(num->num[num->sz-1] == 0){
+//         num->sz--;
+//         realloc(num->num, sizeof(u64)*num->sz);
+//     }
+// }
 
-megaunit* cnv(u64 n){
-    if(n == 0)
-        return ct();
-    megaunit* num = ct();
-    num->sz = 1;
-    num->num = calloc(1, sizeof(u64));
-    num->num[0] = n;
-    return num;
-}
+// megaunit* cnv(u64 n){
+//     if(n == 0)
+//         return ct();
+//     megaunit* num = ct();
+//     num->sz = 1;
+//     num->num = calloc(1, sizeof(u64));
+//     num->num[0] = n;
+//     return num;
+// }
 
-void ls(megaunit* num){
-    num->sz++;
-    realloc(num->num, sizeof(u64)*num->sz);
-    if(num->num == NULL){
-        printf("Error\n");
-        num->sz--;
-        return;
-    }
-    long long int i = num->sz-1;
-    while(i > 0){
-        num->num[i] = num->num[i-1];
-        i--;
-    }
-    num->num[i] = 0;
-}
+// void ls(megaunit* num){
+//     num->sz++;
+//     realloc(num->num, sizeof(u64)*num->sz);
+//     if(num->num == NULL){
+//         printf("Error\n");
+//         num->sz--;
+//         return;
+//     }
+//     long long int i = num->sz-1;
+//     while(i > 0){
+//         num->num[i] = num->num[i-1];
+//         i--;
+//     }
+//     num->num[i] = 0;
+// }
 
-void rs(megaunit* num){
-    if(num->sz > 0){
-        num->sz--;
-        if(num->sz > 0){
-            long long int i = 0;
-            while(i < num->sz){
-                num->num[i] = num->num[i+1];
-                i++;
-            }
-        }
-        realloc(num->num, sizeof(u64)*num->sz);
-        if(num->num == NULL && num->sz > 0){
-            printf("Error\n");
-            num->sz++;
-            return;
-        }
-    }
-}
+// void rs(megaunit* num){
+//     if(num->sz > 0){
+//         num->sz--;
+//         if(num->sz > 0){
+//             long long int i = 0;
+//             while(i < num->sz){
+//                 num->num[i] = num->num[i+1];
+//                 i++;
+//             }
+//         }
+//         realloc(num->num, sizeof(u64)*num->sz);
+//         if(num->num == NULL && num->sz > 0){
+//             printf("Error\n");
+//             num->sz++;
+//             return;
+//         }
+//     }
+// }
 
-void pr(megaunit* num){
-    // if(FULL){
-        megaunit* p = cpx(num, 0, 1);
-        char* s = calloc(p->sz*22, sizeof(char));
-        long long int i = 0;
-        megaunit* ten = ct();
-        ten->sz = 1;
-        ten->num = calloc(1, sizeof(u64));
-        ten->num[0] = 10;
-        megaunit* zero = ct();
-        zero->sz = 1;
-        zero->num = calloc(1, sizeof(u64));
-        megaunit* tmp;
-        while(gt(p, zero)){
-            tmp = dvr(p, ten);
-            s[i] = (char)p->num[0]+'0';
-            i++;
-            dt(p);
-            p = tmp;
-        }
-        while(--i>0){
-            putchar(s[i]);
-        }
-        putchar(s[i]);
-        dt(zero);
-        dt(ten);
-        dt(p);
-        free(s);
-        putchar('\n');
+// void pr(megaunit* num){
+//     // if(FULL){
+//         megaunit* p = cpx(num, 0, 1);
+//         char* s = calloc(p->sz*22, sizeof(char));
+//         long long int i = 0;
+//         megaunit* ten = ct();
+//         ten->sz = 1;
+//         ten->num = calloc(1, sizeof(u64));
+//         ten->num[0] = 10;
+//         megaunit* zero = ct();
+//         zero->sz = 1;
+//         zero->num = calloc(1, sizeof(u64));
+//         megaunit* tmp;
+//         while(gt(p, zero)){
+//             tmp = dvr(p, ten);
+//             s[i] = (char)p->num[0]+'0';
+//             i++;
+//             dt(p);
+//             p = tmp;
+//         }
+//         while(--i>0){
+//             putchar(s[i]);
+//         }
+//         putchar(s[i]);
+//         dt(zero);
+//         dt(ten);
+//         dt(p);
+//         free(s);
+//         putchar('\n');
 
-    // } else{
-    //     printf("sz=%llu\n", num->sz);
-    //     long long int i = num->sz - 1;
-    //     long long int exponent = i;
-    //     if(num->sz == 0) 
-    //         printf("0");
-    //     while(i >= 0)
-    //         printf("%llu * 18446744073709551616^%lld ", num->num[i--], exponent--);
-    //     printf("\n");
-    // }
-}
+//     // } else{
+//     //     printf("sz=%llu\n", num->sz);
+//     //     long long int i = num->sz - 1;
+//     //     long long int exponent = i;
+//     //     if(num->sz == 0) 
+//     //         printf("0");
+//     //     while(i >= 0)
+//     //         printf("%llu * 18446744073709551616^%lld ", num->num[i--], exponent--);
+//     //     printf("\n");
+//     // }
+// }
 
-megaunit* rd(char* s){
-    if(FULL){
+// megaunit* rd(char* s){
+//     if(FULL){
 
-    } else{
-        long long int sz = 0;
-        char* c = NULL;
-        while((c = strchr(s, ' '))){
-            *(c) = ',';
-            sz++;
-        }
-        sz+=2;
-        megaunit* num = ct();
-        if(num == NULL){
-            printf("Error\n");
-            return NULL;
-        }
-        num->sz = sz;
-        num->num = calloc(sz, sizeof(u64));
-        if(num->num == NULL){
-            printf("Error\n");
-            return NULL;
-        }
-        char* word = strtok(s, ",");
-        sz--;
-        while(word != NULL){
-            sscanf(word, "%llu", &(num->num[sz]));
-            sz--;
-            word = strtok(NULL, ",");
-        }
-        while(sz >= 0){
-            rs(num);
-            sz--;
-        }
-        return num;
-    }
-}
+//     } else{
+//         long long int sz = 0;
+//         char* c = NULL;
+//         while((c = strchr(s, ' '))){
+//             *(c) = ',';
+//             sz++;
+//         }
+//         sz+=2;
+//         megaunit* num = ct();
+//         if(num == NULL){
+//             printf("Error\n");
+//             return NULL;
+//         }
+//         num->sz = sz;
+//         num->num = calloc(sz, sizeof(u64));
+//         if(num->num == NULL){
+//             printf("Error\n");
+//             return NULL;
+//         }
+//         char* word = strtok(s, ",");
+//         sz--;
+//         while(word != NULL){
+//             sscanf(word, "%llu", &(num->num[sz]));
+//             sz--;
+//             word = strtok(NULL, ",");
+//         }
+//         while(sz >= 0){
+//             rs(num);
+//             sz--;
+//         }
+//         return num;
+//     }
+// }
 
-void rsb(megaunit* num){
-    if(num->sz > 0){
-        rsb_asm(num->sz, (u64)num->num);
-        shrk(num);
-    }
-}
+// void rsb(megaunit* num){
+//     if(num->sz > 0){
+//         rsb_asm(num->sz, (u64)num->num);
+//         shrk(num);
+//     }
+// }
 
-void sbl(megaunit* num){
-    if(num->num[num->sz-1]&~(1ull<<63)){
-        num->sz++;
-        realloc(num->num, sizeof(u64)*num->sz);
-        num->num[num->sz-1] = 0;
-    }
-    sbl_asm(num->sz, (u64)num->num); //TODO
-}
+// void sbl(megaunit* num){
+//     if(num->num[num->sz-1]&~(1ull<<63)){
+//         num->sz++;
+//         realloc(num->num, sizeof(u64)*num->sz);
+//         num->num[num->sz-1] = 0;
+//     }
+//     sbl_asm(num->sz, (u64)num->num); //TODO
+// }
 
-megaunit* ct(){
-    megaunit* num = (megaunit*)calloc(1, sizeof(megaunit));
-    if(num == NULL){
-        printf("Error\n");
-        return NULL;
-    }
-    return num;
-}
+// megaunit* ct(){
+//     megaunit* num = (megaunit*)calloc(1, sizeof(megaunit));
+//     if(num == NULL){
+//         printf("Error\n");
+//         return NULL;
+//     }
+//     return num;
+// }
 
-void shrk(megaunit* num){
-    long long int i = num->sz-1;
-    while(num->num[i] == 0){
-        if(i > 0){
-            i--;
-        } else{
-            // realloc(num->num, sizeof(u64)*1);
-            // num->sz = 1;
-            // num->num[0] = 0;
-            return;
-        }
-    }
-    num->sz = i+1;
-    realloc(num->num, sizeof(u64)*num->sz);
-}
+// void shrk(megaunit* num){
+//     long long int i = num->sz-1;
+//     while(num->num[i] == 0){
+//         if(i > 0){
+//             i--;
+//         } else{
+//             // realloc(num->num, sizeof(u64)*1);
+//             // num->sz = 1;
+//             // num->num[0] = 0;
+//             return;
+//         }
+//     }
+//     num->sz = i+1;
+//     realloc(num->num, sizeof(u64)*num->sz);
+// }
 
-void dt(megaunit* num){
-    if(num->num != NULL){
-        free(num->num);
-        num->num = NULL;
-    }
-    free(num);
-    num = NULL;
-}
+// void dt(megaunit* num){
+//     if(num->num != NULL){
+//         free(num->num);
+//         num->num = NULL;
+//     }
+//     free(num);
+//     num = NULL;
+// }
