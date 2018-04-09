@@ -158,7 +158,7 @@ inc_asm:
     ; R11 => temp_guy
     xor r10, r10 ; num_idx = 0; carry = 0;
     stc
-    ; inc rcx
+    inc rcx
 inc_loop:
     jnc inc_end
     dec rcx
@@ -180,7 +180,7 @@ dec_asm:
     ; R11 => temp_guy
     xor r10, r10 ; num_idx = 0; carry = 0;
     stc
-    ; inc rcx
+    inc rcx
 dec_loop:
     jnc dec_end
     dec rcx
