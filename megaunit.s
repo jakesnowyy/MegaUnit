@@ -36,7 +36,7 @@ add_loop_1:
 add_loop_2:
     dec rdx
     jz add_end
-    adc [r9+8*r10], byte 0
+    adc qword[r9+8*r10], 0
     inc r10
     jmp add_loop_2
 add_end:
@@ -66,7 +66,7 @@ sub_loop_1:
 sub_loop_2:
     dec rdx
     jz sub_end
-    sbb [r9+8*r10], byte 0
+    sbb qword [r9+8*r10], 0
     inc r10
     jmp sub_loop_2
 sub_end:
@@ -163,7 +163,7 @@ inc_loop:
     jnc inc_end
     dec rcx
     jz inc_end ; if zero goto end
-    adc [rdx+8*r10], byte 0
+    adc qword [rdx+8*r10], 0
     inc r10
     jmp inc_loop
 inc_end:
@@ -185,7 +185,7 @@ dec_loop:
     jnc dec_end
     dec rcx
     jz dec_end ; if zero goto end
-    sbb [rdx+8*r10], byte 0
+    sbb qword [rdx+8*r10], 0
     inc r10
     jmp dec_loop
 dec_end:
