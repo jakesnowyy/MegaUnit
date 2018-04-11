@@ -75,69 +75,21 @@ megaunit* read_megaunit();
 
 //main function
 int main(){
-    megaunit* test1 = calloc(1, sizeof(megaunit));
-    test1->sz = 1;
-    test1->num = calloc(test1->sz, sizeof(u64));
-    test1->num[0] = 846;
+    megaunit* test1 = read_megaunit();
+    megaunit* test2 = read_megaunit();
 
-    megaunit* test2 = calloc(1, sizeof(megaunit));
-    test2->sz = 1;
-    test2->num = calloc(test2->sz, sizeof(u64));
-    test2->num[0] = 123;
-    // long long int old_size = test1->sz;
-    test1->sz += 2;
-    realloc(test1->num, test1->sz * sizeof(u64));
-    // long long int i = 0;
-    // for(; i < 2; i++)
-    //     test1->num[old_size+i] = 0;
-    // shift_qwords_left(test1, 2);
-    // shift_bits_left(test1, 22);
-    // shift_qwords_left(test1, 1);
-    // shift_bits_left(test1, 19);
-    // shift_qwords_left(test1, 1);
-    // shift_bits_left(test1, 19);
-    // shift_qwords_left(test1, 1);
-    // shift_bits_left(test1, 19);
-    free(test1->num);
-    test1->num = NULL;
-    free(test1);
-    test1 = NULL;
-    // destroy(test1);
-    free(test2->num);
-    test2->num = NULL;
-    free(test2);
-    test2 = NULL;
-    // destroy(test2);
+    add_2nd_in_1st(test1, test2);
+    print_megaunit(test1);
+    sub_2nd_from_1st(test1, test2);
+    print_megaunit(test1);
+    mul_2nd_by_1st(test1, test2);
+    print_megaunit(test1);
+    div_1st_by_2nd(test1, test2);
+    print_megaunit(test1);
+    print_megaunit(test2);
 
-    // destroy(test1);
-    // test1 = read_megaunit();
-    // destroy(test1);
-    // test1 = read_megaunit();
-    // destroy(test1);
-    // test1 = read_megaunit();
-    // destroy(test1);
-    // megaunit* test2 = read_megaunit();
-
-
-    // sub_2nd_from_1st(test1, test2);
-
-    // print_megaunit(test1);
-    // megaunit* test2 = read_megaunit();
-    // print_megaunit(test2);
-
-    // shift_qwords_left(test1, 1);
-    // print_megaunit(test1);
-    // shift_qwords_right(test2, 1);
-    // print_megaunit(test2);
-
-    // add_2nd_in_1st(test1, test2);
-    // print_megaunit(test1);
-    // sub_2nd_from_1st(test1, test2);
-    // print_megaunit(test1);
-    // mul_2nd_by_1st(test1, test2);
-    // print_megaunit(test1);
-    // div_1st_by_2nd(test1, test2);
-    // print_megaunit(test1);
+    destroy(test1);
+    destroy(test2);
     return 0;
 }
 
@@ -537,14 +489,14 @@ void div_1st_by_2nd(megaunit* first, megaunit* second){
     do{
         shift_qwords_left(second, 1);
         shifted += 64;
-    } while(!lt(second, first));
+    } while(!lt(first, second));
     //While first >= second
     shift_qwords_right(second, 1);
     shifted -= 64;
     do{
         shift_bits_left(second, 1);
         shifted++;
-    } while(!lt(second, first));
+    } while(!lt(first, second));
     //While first >= second
     while(shifted > 0){
         shift_bits_left(quo, 1);
@@ -552,7 +504,7 @@ void div_1st_by_2nd(megaunit* first, megaunit* second){
         shifted--;
 
         //While first >= second
-        while(!lt(second, first)){
+        while(!lt(first, second)){
             sub_2nd_from_1st(first, second);
             inc(quo);
         }
@@ -576,7 +528,7 @@ void recheck_size(megaunit* num){
     long long int i = num->sz;
     while(--i > 0 && num->num[i] == 0)
         num->sz--;
-    realloc(num->num, num->sz * sizeof(u64));
+    num->num = realloc(num->num, num->sz * sizeof(u64));
 }
 
 void increase_size(megaunit* num, u64 size){
@@ -586,7 +538,7 @@ void increase_size(megaunit* num, u64 size){
  */
     long long int old_size = num->sz;
     num->sz += size;
-    realloc(num->num, num->sz * sizeof(u64));
+    num->num = realloc(num->num, num->sz * sizeof(u64));
     long long int i = 0;
     for(; i < size; i++)
         num->num[old_size+i] = 0;
@@ -617,7 +569,9 @@ void move(megaunit* destination, megaunit* origin){
  */
     free(destination->num);
     destination->num = origin->num;
+    destination->sz = origin->sz;
     origin->num = NULL;
+    // origin->sz = 0; Maybe unnecessary
     free(origin);
     origin = NULL;
 }
