@@ -57,6 +57,9 @@ void sub_2nd_from_1st(megaunit* first, megaunit* second);
 void mul_2nd_by_1st(megaunit* first, megaunit* second);
 void div_1st_by_2nd(megaunit* first, megaunit* second);
 
+//Factorial and power
+void factorial(megaunit* num);
+
 //Resize (or fit)
 //function previously named 'resize_fit'
 void recheck_size(megaunit* num);
@@ -74,22 +77,31 @@ megaunit* read_megaunit();
 
 
 //main function
-int main(){
-    megaunit* test1 = read_megaunit();
-    megaunit* test2 = read_megaunit();
+int main(int argc, char* argv[]){
+    megaunit* test1;
+    if(argc == 2){
+        u64 n = 0;
+        sscanf(argv[1], "%d", &n);
+        test1 = new_unit_from_val(n);
+    } else
+        test1 = read_megaunit();
+    // megaunit* test2 = read_megaunit();
 
-    add_2nd_in_1st(test1, test2);
+    // add_2nd_in_1st(test1, test2);
     print_megaunit(test1);
-    sub_2nd_from_1st(test1, test2);
+    // sub_2nd_from_1st(test1, test2);
+    // print_megaunit(test1);
+    // mul_2nd_by_1st(test1, test2);
+    // print_megaunit(test1);
+    // div_1st_by_2nd(test1, test2);
+    // print_megaunit(test1);
+    // print_megaunit(test2);
+
+    factorial(test1);
     print_megaunit(test1);
-    mul_2nd_by_1st(test1, test2);
-    print_megaunit(test1);
-    div_1st_by_2nd(test1, test2);
-    print_megaunit(test1);
-    print_megaunit(test2);
 
     destroy(test1);
-    destroy(test2);
+    // destroy(test2);
     return 0;
 }
 
@@ -513,6 +525,29 @@ void div_1st_by_2nd(megaunit* first, megaunit* second){
 }
 //
 //Arithmetic operations section end
+//
+
+//
+//Factorial and power section start
+//
+void factorial(megaunit* num){
+/**
+ * This function calculates the factorial
+ * of the megaunit 'num' and put it into itself
+ */
+    megaunit* one = new_unit_from_val(1);
+    megaunit* temp = new_from_size(num->sz);
+    memcpy(temp->num, num->num, num->sz*sizeof(u64));
+    dec(temp);
+    while(gt(temp, one)){
+        mul_2nd_by_1st(num, temp);
+        dec(temp);
+    }
+    destroy(temp);
+    destroy(one);
+}
+//
+//Factorial and power section end
 //
 
 //
