@@ -1,7 +1,3 @@
-options = -O2
-os = linux
-obj_ext = .o
-ASMFLAGS = -felf64 -dlinux
 src_c = $(wildcard *.c)
 src_asm = $(wildcard *.s)
 obj = $(src_asm:.s=$(obj_ext))
@@ -26,6 +22,3 @@ $(EXEC): $(obj) $(src_c)
 
 ok:
 	@echo No errors
-
-clean:
-	@rm -f $(TEMPS)
