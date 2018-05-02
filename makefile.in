@@ -3,7 +3,7 @@ src_asm = $(wildcard *.s)
 obj = $(src_asm:.s=$(obj_ext))
 proj = megaunit
 CC = gcc
-CFLAGS = $(options) -Wall -std=c99 -pedantic -Wno-format -D$(os)
+CFLAGS = $(options) -Wall -Werror -std=c11 -pedantic -Wno-format -fms-extensions -D$(os)
 EXEC = $(proj)$(exe_ext)
 TEMPS = $(obj) $(EXEC)
 

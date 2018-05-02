@@ -1,8 +1,22 @@
 /*
   megaunit.c
-  **Code being refactored**
+  **Adding fixed point decimal arithmetics**
 
 */
+
+/**
+ * TODO: turn read and print functions that receive/return
+ * megaunits to functions that receive/return strings
+ * and make functions that turn megaunits in strings 
+ * and vice-versa
+ */
+
+/**
+ * Also need to make different functions to megafixed
+ * when needed
+ */
+
+
 
 //includes
 #include <stdio.h>
@@ -19,7 +33,11 @@ typedef struct MegaUnit {
     u64 sz;
 } megaunit;
 
-//assembly functions
+typedef struct MegaFixed {
+    struct MegaUnit;
+} megafixed;
+
+//Assembly functions
 void add_asm(u64 num2_sz, u64 num3_sz, u64 num2, u64 num3);
 void sub_asm(u64 num2_sz, u64 num3_sz, u64 num2, u64 num3);
 void mul_asm(u64 vec, u64 num1_sz, u64 num2_sz);
@@ -56,6 +74,7 @@ void add_2nd_in_1st(megaunit* first, megaunit* second);
 void sub_2nd_from_1st(megaunit* first, megaunit* second);
 void mul_2nd_by_1st(megaunit* first, megaunit* second);
 void div_1st_by_2nd(megaunit* first, megaunit* second);
+void qot_1st_by_2nd(megaunit* first, megaunit* second);
 
 //Factorial and power
 void factorial(megaunit* num);
@@ -71,24 +90,36 @@ void move(megaunit* destination, megaunit* origin);
 
 //Print
 void print_megaunit(megaunit* num);
+void print_megafixed(megafixed* fxd);
 
 //Read
-megaunit* read_megaunit();
+megaunit* read_megaunit(char char_end);
+megafixed* read_megafixed();
 
+//Multiply by 
+void fixed_mul(megaunit *num);
+void fixed_div(megafixed *fxd);
+u64 modn = 10000000000000000ull;
 
 //main function
 int main(int argc, char* argv[]){
-    megaunit* test1;
+    megaunit* test1, *test2;
     if(argc == 2){
         u64 n = 0;
         sscanf(argv[1], "%d", &n);
         test1 = new_unit_from_val(n);
-    } else
-        test1 = read_megaunit();
+    } else{
+        test1 = (megaunit*)read_megafixed();
+        test2 = (megaunit*)read_megafixed();
+    }
     // megaunit* test2 = read_megaunit();
-
+    // fixed(test1);
+    // fixed(test2);
     // add_2nd_in_1st(test1, test2);
-    print_megaunit(test1);
+    mul_2nd_by_1st(test1, test2);
+    fixed_div((megafixed*)test1);
+    print_megafixed((megafixed*)test1);
+    print_megafixed((megafixed*)test2);
     // sub_2nd_from_1st(test1, test2);
     // print_megaunit(test1);
     // mul_2nd_by_1st(test1, test2);
@@ -97,8 +128,8 @@ int main(int argc, char* argv[]){
     // print_megaunit(test1);
     // print_megaunit(test2);
 
-    factorial(test1);
-    print_megaunit(test1);
+    // factorial(test1);
+    // print_megaunit(test1);
 
     destroy(test1);
     // destroy(test2);
@@ -523,6 +554,16 @@ void div_1st_by_2nd(megaunit* first, megaunit* second){
     }
     move(second, quo);
 }
+
+void qot_1st_by_2nd(megaunit* first, megaunit* second){
+    megaunit* temp_f = new_from_size(first->sz);
+    memcpy(temp_f->num, first->num, sizeof(u64)*first->sz);
+    megaunit* temp_s = new_from_size(second->sz);
+    memcpy(temp_s->num, second->num, sizeof(u64)*second->sz);
+    div_1st_by_2nd(temp_f, temp_s);
+    move(first, temp_s);
+    destroy(temp_f);
+}
 //
 //Arithmetic operations section end
 //
@@ -646,6 +687,48 @@ void print_megaunit(megaunit* num){
     ten = NULL;
     destroy(copy);    
 }
+
+void print_megafixed(megafixed* fxd){
+    megaunit* ten = new_unit_from_val(10);
+    megaunit* zero = new_unit_from_val(0);
+
+    char* s = calloc(fxd->sz*22, sizeof(char));
+    s[0] = '0';
+    long long int i = 0;
+    
+    megaunit* copy = new_from_size(fxd->sz);
+    memcpy(copy->num, fxd->num, fxd->sz*sizeof(u64));
+
+    while(gt(copy, zero)){
+        div_1st_by_2nd(copy, ten);
+        s[i] = (char)copy->num[0]+'0';
+        i++;
+        move(copy, ten);
+        ten = new_unit_from_val(10);
+    }
+    int teste = 16;
+    if(i < teste){
+        putchar('0');
+        putchar('.');
+        while(--teste-i){
+            putchar('0');
+        }
+    }
+    while(--i>15){
+        putchar(s[i]);
+    }
+    putchar('.');i++;
+    while(--i>0){
+        putchar(s[i]);
+    }
+    putchar(s[0]);
+    putchar('\n');
+    free(s);
+    destroy(zero);
+    // destroy(ten);
+    ten = NULL;
+    destroy(copy);    
+}
 //
 //Print section end
 //
@@ -653,12 +736,12 @@ void print_megaunit(megaunit* num){
 //
 //Read section start
 //
-megaunit* read_megaunit(){
+megaunit* read_megaunit(char char_end){
     megaunit* read = new_from_size(1);
     megaunit* ten = new_unit_from_val(10);
     megaunit* digit;
     char in = getchar();
-    while(in != '\n'){
+    while(in != char_end){
         mul_2nd_by_1st(read, ten);
         digit = new_unit_from_val(in-'0');
         add_2nd_in_1st(read, digit);
@@ -668,11 +751,63 @@ megaunit* read_megaunit(){
     destroy(ten);
     return read;
 }
+
+megafixed* read_megafixed(){
+    // megaunit* read = new_from_size(1);
+    // megaunit* ten = new_unit_from_val(10);
+    // megaunit* digit;
+    // char in = getchar();
+    // while(in != '.'){
+    //     mul_2nd_by_1st(read, ten);
+    //     digit = new_unit_from_val(in-'0');
+    //     add_2nd_in_1st(read, digit);
+    //     destroy(digit);
+    //     in = getchar();
+    // }
+    // // fixed(read);
+    // in = getchar();
+    // while(in != '\n'){
+    //     mul_2nd_by_1st(read, ten);
+    //     digit = new_unit_from_val(in-'0');
+    //     add_2nd_in_1st(read, digit);
+    //     destroy(digit);
+    //     in = getchar();
+    // }
+    // destroy(ten);
+    // return (megafixed*)read;
+    static megaunit mod = {(u64*)&modn, 1};
+    megaunit* ten = new_unit_from_val(10);
+    megaunit* int_part = read_megaunit('.');
+    // getchar();
+    megaunit* dec_part = read_megaunit('\n');
+    while(lt(dec_part, &mod)){
+        mul_2nd_by_1st(dec_part, ten);
+    }
+    while(!lt(dec_part, &mod)){
+        qot_1st_by_2nd(dec_part, ten);
+    }
+    fixed_mul(int_part);
+    add_2nd_in_1st(int_part, dec_part);
+    destroy(ten);
+    destroy(dec_part);
+    return (megafixed*) int_part;
+}
 //
 //Read section end
 //
 
 // //NOT refactored code
+
+void fixed_mul(megaunit *num){
+    static megaunit mod = {(u64*)&modn, 1};
+    // print_megaunit(&mod);
+    mul_2nd_by_1st(num, &mod);
+}
+
+void fixed_div(megafixed* fxd){
+    static megaunit mod = {(u64*)&modn, 1};
+    qot_1st_by_2nd((megaunit*)fxd, &mod);
+}
 
 // //kk
 // void increase_size(megaunit* num, u64 size){
