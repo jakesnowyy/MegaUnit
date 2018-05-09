@@ -9,8 +9,8 @@ src_c = $(wildcard *.c)
 src_asm = $(wildcard *.s)
 obj = $(src_asm:.s=$(obj_ext))
 proj = megaunit
-CC = $(PATH_TO_CC)/gcc
-ASM = $(PATH_TO_ASM)/nasm
+CC = $(PATH_TO_CC)gcc
+ASM = $(PATH_TO_ASM)nasm
 CFLAGS = $(options) -Wall -std=c99 -pedantic -Wno-format -D$(os)
 EXEC = $(proj)$(exe_ext)
 TEMPS = $(obj) $(EXEC)

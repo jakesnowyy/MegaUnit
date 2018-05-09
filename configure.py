@@ -5,6 +5,12 @@ debug = True
 optimizate = False
 test = False
 
+cc_path = ""
+asm_path = ""
+
+cc_path_option = False
+asm_path_option = False
+
 args = sys.argv[1:]
 # if len(args) == 0:
 #     args.append('-h')
@@ -32,6 +38,16 @@ options:
 be good\
         """)
         exit(0)
+    elif arg == "--cc-path":
+        cc_path_option = True
+    elif arg == "--asm-path":
+        asm_path_option = True
+    elif cc_path_option == True:
+        cc_path_option = False
+        cc_path = arg
+    elif asm_path_option == True:
+        asm_path_option  = False
+        asm_path = arg
 
 print('generating makefile...')
 mk = open("makefile", "w")
@@ -64,6 +80,17 @@ if platform.machine().endswith("64"):
         print("Sorry, unsupported system")
         mk.close()
         exit(1)
+
+if len(cc_path) != 0:
+    if cc_path[-1] != "/":
+        cc_path += "/"
+
+if len(asm_path) != 0:
+    if asm_path[-1] != "/":
+        asm_path += "/"
+
+mk.write("PATH_TO_CC = " + cc_path + "\n")
+mk.write("PATH_TO_ASM = " + asm_path + "\n")
 
 f = open("makefile.in", "r")
 mk.write(f.read())
